@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>API Usage &mdash; CKEditor Sample</title>
+	<script src="ckeditor.js"></script>
+	<link href="samples.css" rel="stylesheet">
+    
+
+	<script>
+function ContenidoHtml() {
+	// Get the editor instance that you want to interact with.
+	var editor = CKEDITOR.instances.editor;
+
+	// Get editor contents
+	// https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_editor.html#method-getData
+	alert( editor.getData() );
+}
+
+
+
+function Focus() {
+	CKEDITOR.instances.editor1.focus();
+}
+
+function onFocus() {
+	document.getElementById( 'eMessage' ).innerHTML = '<b>' + this.name + ' is focused </b>';
+}
+
+function onBlur() {
+	document.getElementById( 'eMessage' ).innerHTML = this.name + ' lost focus';
+}
+
+	</script>
+
+</head>
+<body>
+	
+	
+	<form action="../../../samples/sample_posteddata.php" method="post" >
+		
+           <textarea cols="100" id="editor" name="editor" rows="10" >
+             probando
+           </textarea>
+        
+    </form>
+		<script>
+			// Replace the <textarea id="editor1"> with an CKEditor instance.
+			CKEDITOR.replace( 'editor', {
+				on: {
+					focus: onFocus,
+					blur: onBlur,
+
+					// Check for availability of corresponding plugins.
+					pluginsLoaded: function( evt ) {
+						/*var doc = CKEDITOR.document, ed = evt.editor;
+						if ( !ed.getCommand( 'bold' ) )
+							doc.getById( 'exec-bold' ).hide();
+						if ( !ed.getCommand( 'link' ) )
+							doc.getById( 'exec-link' ).hide();*/
+					}
+				}
+			});
+		</script>
+
+			<input onclick="ContenidoHtml()" type="button" value="Contenido Html">
+			
+			
+			
+		
+	
+</body>
+</html>

@@ -1,0 +1,133 @@
+<?php session_start();
+require_once('tcpdf_include.php'); 
+require_once('../../cado/ClaseReporte.php'); 
+
+$oreporte=new Reportes();
+
+/*
+$idremitente=$_SESSION['S_id'];
+$tipodocumento=$_POST['IdVercmb_tra_tipdoc'];
+$iddestinatario=$_POST['IdVercmb_tra_des'];
+$encargado=$_POST['IdHiEncargado'];
+$tipo_tramite=$_POST['IdHiTipoTramite'];
+$cliente=$_POST['IdHiCliente'];*/
+
+
+/*if($encargado==1){$encargado='( E )';}else{$encargado='';}
+
+
+      $datos=$oconfiguracion->ListarUsuarioXId($idremitente)->fetch();
+	  $remitente=$datos[0];$area=$datos[2];$cargo=$datos[1];$iddepen=$datos[3];
+	  
+	  $datos_des=$oconfiguracion->ListarUsuarioXId($iddestinatario)->fetch();
+	  $destinatario=$datos_des[0];$area_destino=$datos_des[2];$cargo_destinatario=$datos_des[1];$nombre_area=$datos_des[4];
+	  
+	  $datos_tipo=$oconfiguracion->ListarTipoDocXId($tipodocumento,$iddepen)->fetch();
+	  $tipodoc=$datos_tipo[0];$nro_documento=$datos_tipo[1];$anio=$datos_tipo[2];
+
+
+$asunto=$_POST['IdVertxt_tra_asu'];
+$cuerpo=$_POST['IdVerContenido'];*/
+
+$fecha=date('d-m-Y H:i:s');
+$fecha_castellano=$oreporte->fechaCastellano($fecha);
+$cuerpo='';
+// create new PDF document
+$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+// set default header data
+//$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
+
+// set header and footer fonts
+$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+//$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+// set default monospaced font
+//$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+// set margins
+$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+//$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+// set auto page breaks
+$pdf->setPrintHeader(false);
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+// set image scale factor
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+$pdf->SetLeftMargin(25);
+$pdf->SetrightMargin(20);
+
+$pdf->AddPage();
+
+// para la cabecera
+$pdf->SetFillColor(255);
+$style6 = array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => '4,3', 'color' => array(0, 0, 0));
+
+$pdf->SetY(60);
+
+
+$pdf->SetFont('arial','',16);
+$pdf->Cell(160,5,$fecha_castellano,0,1,'R');
+$pdf->Ln(3);
+$pdf->SetFont('verdana','BU',14);
+$pdf->Cell(160,5,'CERTIFICADO DE EVALUACION',1,1,'C');
+
+$pdf->Ln(7);
+$pdf->SetFont('arial','',11);
+$parrafo1="CONSTA POR EL PRESENTE QUE EL QUE SUCRIBE HA REALIZADO LA EVALUACION <br><br>
+DE DESCARTE PARA LA INFECCION DE COVID-19, AL PACIENTE :";
+$pdf->writeHTML($parrafo1, true, false, true, false, '');
+
+$pdf->Ln(5);
+$pdf->SetFont('arial','B',14);
+$paciente="ELIAS INCIO MILTON JHON";
+$pdf->Cell(160,5,$paciente,0,1,'C');
+
+$pdf->Ln(5);
+$pdf->SetFont('arial','',11);
+$parrafo2="<p style='text-align:justify'>DE 31 AÑOS DE EDAD CON DNI 45407171 MEDIANTE EL METODO DE PRUEBA RAPIDA, MARCA SS BIOSENSOR, TIPO COVID-19 IgM/IgG DUO, LOTE N° QCO1020022; OBTENIENDO
+ EL SIGUIENTE RESULTADO :</p>";
+$pdf->writeHTML($parrafo2, true, false, true, false, '');
+
+
+
+
+
+
+
+
+
+//$pdf->Cell(140,5,$asunto,0,0,'L');
+
+
+$pdf->Ln(12);
+
+$pdf->SetFont('arial','',10);
+
+$pdf->writeHTML($cuerpo, true, false, true, false, '');
+   
+ //  $pdf->MultiCell(55, 100, $cuerpo, 1, 'J', 1, 2, '' ,'', true);
+
+
+
+// output the HTML content
+
+
+
+// set some language-dependent strings (optional)
+/*if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+	require_once(dirname(__FILE__).'/lang/eng.php');
+	$pdf->setLanguageArray($l);
+}*/
+
+
+
+
+
+$pdf->Output('Documento.pdf', 'I');
+
+
+?>
