@@ -192,14 +192,6 @@ date_default_timezone_set('America/Lima');
 
 					<b class="arrow"></b>
 					<ul class="submenu">
-						<li class="hover" id="2" onClick="Activar('1');Productos()">
-							<a href="#">
-								<i style="margin:0; padding:0" class="menu-icon fa fa-caret-right"></i>
-								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold"> PRODUCTOS </span>
-							</a>
-
-							<b class="arrow"></b>
-						</li>
 						<li class="hover" id="3" onClick="Activar('1');CategoriasProducto()">
 							<a href="#">
 								<i class="menu-icon fa fa-caret-right" style="margin:0; padding:0"></i>
@@ -208,6 +200,15 @@ date_default_timezone_set('America/Lima');
 
 							<b class="arrow"></b>
 						</li>
+						<li class="hover" id="2" onClick="Activar('1');Productos()">
+							<a href="#">
+								<i style="margin:0; padding:0" class="menu-icon fa fa-caret-right"></i>
+								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold"> PRODUCTOS </span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+
 
 
 					</ul>

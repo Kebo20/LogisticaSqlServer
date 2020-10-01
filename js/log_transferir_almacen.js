@@ -57,25 +57,56 @@ $("#TAsuc_org").change(function() {
     }, 100);
 
 });
+$("#TAalm_org").change(function() {
+    
+    setTimeout(function() {
+        $("#TAsuc_des").select2('open');
+    }, 100);
+    setTimeout(function() {
+        LotexAlmacen()
+    }, 600);
+
+});
+
 
 
 function almacenxsucursal1() {
-    $("#TAalm_org").html("");
+  $("#TAalm_org").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
         sucursal: $("#TAsuc_org").val(),
     }, function(data) {
 
         $("#TAalm_org").html(data);
-        console.log(data);
+       // console.log(data);
 
     });
 }
 
 
+function LotexAlmacen() {
+    $("#TAproducto").html("");
+    $.post("controlador/Clogistica.php?op=LISTAR_LOTExALM", {
+        almacen: $("#TAalm_org").val(),
+    }, function(data) {
+
+        $("#TAproducto").html(data);
+        console.log(data);
+
+    });
+}
+
 $("#TAsuc_des").change(function() {
     almacenxsucursal2()
     setTimeout(function() {
         $("#TAalm_des").select2('open');
+
+    }, 100);
+
+});
+$("#TAalm_des").change(function() {
+    almacenxsucursal2()
+    setTimeout(function() {
+        $("#TAproducto").select2('open');
 
     }, 100);
 
@@ -95,28 +126,13 @@ function almacenxsucursal2() {
 }
 
 
-$("#TAalm_org").change(function() {
-    LotexAlmacen()
 
 
-
-});
-
-function LotexAlmacen() {
-    $("#TAproducto").html("");
-    $.post("controlador/Clogistica.php?op=LISTAR_LOTExALM", {
-        almacen: $("#TAalm_org").val(),
-    }, function(data) {
-
-        $("#TAproducto").html(data);
-        //console.log(data);
-
-    });
-}
 
 $("#TAproducto").change(function() {
 
     MostrarStockUnidad()
+    $("#TAcantidad").focus()
 
 
 });
@@ -155,25 +171,17 @@ function MostrarStockUnidad() {
 
 }
 
-
-
-
 $("#TAcantidad").change(function() {
     if ($("#TAcantidad").val() > parseInt(stock)) {
         swal("Cantidad excede el stock", "", "error")
-        // $("#TAcantidad").val("")
+         $("#TAcantidad").val("")
         $("#TAcantidad").focus();
         return false
     }
-
-
-
-
 });
 
 
 function Transferir() {
-
 
     if ($("#TAalm_org").val() == "") {
         swal("Campo requerido", "Seleccione un almacén de origen", "warning");

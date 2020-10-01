@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     var stock;
     var unidad;
@@ -27,7 +27,7 @@ $(document).ready(function() {
 
 
 
-    $('.numero').on("keypress", function() {
+    $('.numero').on("keypress", function () {
         if (event.keyCode > 47 && event.keyCode < 60 || event.keyCode == 46) {
 
         } else {
@@ -39,8 +39,21 @@ $(document).ready(function() {
 });
 
 
-$("#TAsuc_org").change(function() {
+$("#TAsuc_org").change(function () {
     almacenxsucursal1()
+    setTimeout(function () {
+        $("#TAalm_org").select2('open');
+
+    }, 100);
+
+
+});
+
+$("#TAalm_org").change(function () {
+
+    setTimeout(function () {
+        $("#TAproducto").select2('open');
+    }, 100);
 
 
 });
@@ -50,7 +63,7 @@ function almacenxsucursal1() {
     $("#TAalm_org").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
         sucursal: $("#TAsuc_org").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#TAalm_org").html(data);
         console.log(data);
@@ -59,30 +72,10 @@ function almacenxsucursal1() {
 }
 
 
-$("#TAsuc_des").change(function() {
-    almacenxsucursal2()
-    setTimeout(function() {
-        $("#TAalm_des").select2('open');
-
-    }, 100);
-
-});
 
 
-function almacenxsucursal2() {
-    $("#TAalm_des").html("");
-    $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
-        sucursal: $("#TAsuc_des").val(),
-    }, function(data) {
 
-        $("#TAalm_des").html(data);
-        // console.log(data);
-
-    });
-}
-
-
-$("#TAalm_org").change(function() {
+$("#TAalm_org").change(function () {
     LotexAlmacen()
 
 
@@ -93,7 +86,7 @@ function LotexAlmacen() {
     $("#TAproducto").html("");
     $.post("controlador/Clogistica.php?op=LIS_LOTE_FRACCIONxALM", {
         almacen: $("#TAalm_org").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#TAproducto").html(data);
         //console.log(data);
@@ -101,49 +94,39 @@ function LotexAlmacen() {
     });
 }
 
-$("#TAproducto").change(function() {
+$("#TAproducto").change(function () {
 
     MostrarStockUnidad()
-
-
+    
 });
 
 
-$("#TAfraccionar").change(function() {
-
-    MostrarStockUnidad()
-
-
-    // console.log(stock)
-    //console.log(unidad)
-
-
-});
 
 
 function MostrarStockUnidad() {
 
     $.post("controlador/Clogistica.php?op=PRODUCTO_FRACCIONxLOTE", {
         lote: $("#TAproducto").val(),
-    }, function(data) {
+    }, function (data) {
 
 
         stock = data.stock
         cantidad_fraccion = data.cantidad_fraccion
         $("#TAunidad_equi").val("1 " + data.nombre_unidad + "  ");
-       
+
         $("#TAstock").val(stock + " " + data.nombre_unidad + " ");
 
         $.post("controlador/Clogistica.php?op=LLENAR_PRO", {
             id: data.id_producto_fraccion,
-        }, function(data) {
+        }, function (data) {
 
 
-           
-            $("#TAfraccion_equi").val(cantidad_fraccion + " " +data.unidad+" "+ data.nombre);
+
+            $("#TAfraccion_equi").val(cantidad_fraccion + " " + data.unidad + " " + data.nombre);
 
             $("#TAunidad_fraccion").val(data.unidad);
 
+            $("#TAcantidad").focus()
 
 
 
@@ -160,10 +143,10 @@ function MostrarStockUnidad() {
 
 
 
-$("#TAcantidad").change(function() {
+$("#TAcantidad").change(function () {
     if ($("#TAcantidad").val() > parseInt(stock)) {
         swal("Cantidad excede el stock", "", "error")
-        // $("#TAcantidad").val("")
+        $("#TAcantidad").val("")
         $("#TAcantidad").focus();
         return false
     } else {
@@ -179,22 +162,17 @@ $("#TAcantidad").change(function() {
 
 function Fraccionar() {
 
-
     if ($("#TAalm_org").val() == "") {
         swal("Campo requerido", "Seleccione un almacén ", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#TAalm_org").select2('open');
         }, 200);
         return false;
     }
 
-
-
-
-
     if ($("#TAproducto").val() == "") {
         swal("Campo requerido", "Seleccione un producto", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#TAproducto").select2('open');
         }, 200);
         return false;
@@ -211,13 +189,13 @@ function Fraccionar() {
 
     if ($("#TAcantidad").val() > parseInt(stock)) {
         swal("Cantidad excede el stock", "", "error")
-        //$("#TAcantidad").val("")
+        $("#TAcantidad").val("")
         $("#TAcantidad").focus();
         return false
     }
 
 
-
+    $("#FLbtn_guardar").attr("disabled", true)
 
     $.post("controlador/Clogistica.php?op=FRACCIONAR_LOTE", {
 
@@ -226,9 +204,7 @@ function Fraccionar() {
         cantidad: $("#TAcantidad").val(),
         lote: $("#TAproducto").val()
 
-
-
-    }, function(data) {
+    }, function (data) {
 
         if (data == 1) {
             swal("Correcto", "Registrado correctamente", "success");
@@ -242,6 +218,8 @@ function Fraccionar() {
         cantidad_fraccion = ''
         console.log(data);
         $("#TAcantidad_fraccion").val("")
+        $("#FLbtn_guardar").attr("disabled", false)
+
     });
 
 
@@ -249,6 +227,7 @@ function Fraccionar() {
 
 function Limpiar() {
     $("#TAsuc_org,#TAalm_org,#TAproducto,#TAcantidad,#TAstock,#TAunidad,#TAunidad_equi,#TAfraccion_equi,#TAcantidad_fraccion,#TAunidad_fraccion").val("").change()
+    $("#FLbtn_guardar").attr("disabled", false)
 
     stock = ''
     unidad = ''

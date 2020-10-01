@@ -128,9 +128,9 @@ $lista_sucursales2 = $osucursal->ListarTodoSucursal();
     <hr>
     <div class="row" style="position: absolute;right:8%">
 
-        <button type="button" id="OCbtn_guardar" class="btn btn-white btn-info btn-bold " onclick="Fraccionar()"><i class="fa fa-save"></i> FRACCIONAR </button>
+        <button type="button" id="FLbtn_guardar" class="btn btn-white btn-info btn-bold " onclick="Fraccionar()"><i class="fa fa-save"></i> FRACCIONAR </button>
 
-        <button type="button" id="OCbtn_cancelar" class="btn btn-white btn-info btn-bold " onclick="Limpiar()"><i class="ace-icon fa fa-times red2"></i> CANCELAR </button>
+        <button type="button" id="FLbtn_cancelar" class="btn btn-white btn-info btn-bold " onclick="Limpiar()"><i class="ace-icon fa fa-times red2"></i> CANCELAR </button>
 
     </div>
 

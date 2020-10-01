@@ -5,7 +5,7 @@
     </h1>
 
 </div>
-<?php 
+<?php
 require_once('cado/ClaseLogistica.php');
 
 $olog = new Logistica();
@@ -28,7 +28,7 @@ $lista_unidades = $olog->ListarUnidades();
                 <th>Unid.</th>
                 <th>Min.</th>
                 <th>Máx.</th>
-                
+
                 <th>Tipo</th>
                 <th>Fraccion</th>
                 <th>Cant.</th>
@@ -172,12 +172,19 @@ $lista_unidades = $olog->ListarUnidades();
                         <tr>
                             <td>&nbsp;</td>
                         </tr>
+                        <tr>
 
-
-                        <tr id='tr_especial'>
-
+                            <td rowspan="2" align="left"><b>¿Fraccionar?</b><br>
+                                <input type="checkbox" id="cbx_fraccion" onchange="ChangeFraccionar()" class="input-xs" style="height: 30px;"></td>
+                        </tr>
 
                         <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+
+
+
+                        <tr id='tr_fraccion'>
                             <td><b>Cantidad fracción</b><br>
 
                                 <input type="number" id="pro_cantidad_fraccion" name="cantidad_fraccion" class="form-control numero"></td>
@@ -192,7 +199,9 @@ $lista_unidades = $olog->ListarUnidades();
 
                         </tr>
 
-                        </tr>
+
+
+
 
 
                     </table>

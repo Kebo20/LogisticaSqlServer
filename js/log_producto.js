@@ -6,6 +6,8 @@ var $id_producto_fraccion = $("#pro_producto_fraccion").select2({ dropdownAutoWi
 var $tipo = $("#pro_tipo").select2({ dropdownAutoWidth: true, width: '100%' });
 ListarProductosFraccion()
 Listar(1);
+$("#tr_fraccion").hide()
+
 function Listar(pagina) {
 
     //  $("#lista").html("<tr><td class='text-center' colspan='5'>Cargando ...<td></tr>");
@@ -92,9 +94,22 @@ function Listar(pagina) {
     });
 }
 
+function ChangeFraccionar(){
+    
+    if(!$("#cbx_fraccion").is(':checked')){
+        $("#tr_fraccion").hide()
+        $("#pro_cantidad_fraccion").val("").change()
+        $("#pro_producto_fraccion").val("").change()
 
+    }else{
+        $("#tr_fraccion").show()
+    }
+   
+}
 
 function abrirModal() {
+    $("#cbx_fraccion").prop("checked",false).change()
+
     ListarProductosFraccion()
     $("#pro_valor").val("1");
     $("#pro_nombre,#pro_stock_min,#pro_stock_max,#pro_cantidad_fraccion").val("");
@@ -115,7 +130,7 @@ function ListarProductosFraccion() {
     }, function (data) {
 
         $("#pro_producto_fraccion").html(data);
-        console.log(data)
+       // console.log(data)
 
 
     });
@@ -124,6 +139,8 @@ function ListarProductosFraccion() {
 
 
 function editar($id) {
+    $("#cbx_fraccion").prop("checked",false).change()
+
     $.post("controlador/Clogistica.php?op=LLENAR_PRO", { id: $id }, function (data) {
         console.log(data);
 
@@ -142,9 +159,12 @@ function editar($id) {
 
 
         setTimeout(function () {
-            if (data.id_producto_fraccion == 0) {
-                $id_producto_fraccion.val('').trigger("change");
+            if (data.id_producto_fraccion == 0) { //SI ES O NO FRACCIONADO
+                $("#cbx_fraccion").prop("checked",false).change()
+
             } else {
+                $("#cbx_fraccion").prop("checked",true).change()
+
                 $id_producto_fraccion.val(data.id_producto_fraccion).trigger("change");
 
             }
