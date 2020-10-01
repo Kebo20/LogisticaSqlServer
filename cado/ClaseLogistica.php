@@ -202,7 +202,7 @@ class Logistica
         return $ejecutar;
     }
 
-   
+
 
     function ListarProductoLogxid($id)
     {
@@ -664,11 +664,12 @@ class Logistica
             //$usuario = $_SESSION['S_iduser'];
             $usuario = "1";
             $date = date('d-m-Y H:i:s');
-            if($id_orden!='0'){
+
+            //Si compra viene de orden 
+            if ($id_orden != '0') {
                 $id_almacen = $this->ListarOrdenCompraxId($id_orden)->fetch()['id_almacen'];
-                $nro_orden = $this->ListarOrdenCompraxId($id_orden)->fetch()['numero'];
             }
-           
+
             $sql = "insert into log_compra(fecha,id_usuario,id_proveedor,tipo_documento,tipo_afectacion,monto_sin_igv,igv,monto_igv,"
                 . "total,nota_credito,fecha_sistema,tipo_compra,nro_documento,nro_dias) values('$fecha','$usuario','$proveedor',"
                 . "'$tipo_documento','$tipo_afectacion',"
@@ -692,6 +693,8 @@ class Logistica
                 $producto = $this->ListarProductoLogxid($id_producto)->fetch();
                 $unidad = $producto['unidad'];
                 $id_categoria = $producto['id_categoria'];
+
+                //Cuando es producto, no servicio
                 if ($producto['tipo_producto'] == '0') {
 
                     $id_lote = $this->ListarLotexNroProAlm($nro_lote, $id_producto, $id_almacen)->fetch();
@@ -722,19 +725,23 @@ class Logistica
                         '$nro_documento','$producto[3]','$cantidad','$id_almacen',(select max(id) from log_compra),'$usuario',$costo_total);";
                 }
 
-                //Insertar detalles de compra
-                $sql .= "insert into log_compra_detalle(id_compra,id_producto,bonificacion,id_lote,fecha_vencimiento,cantidad,"
-                    . "precio_sin_igv,monto_igv,subtotal,precio_compra_ant,nro_orden)values((select max(id) from log_compra),'$id_producto',"
-                    . "'$bonificacion',$lote,'$fecha_vencimiento','$cantidad',"
-                    . "'$precio_sin_igv','$monto_igv','$subtotal','$precio_anterior','$nro_orden');";
+
                 //SI DETALLE PERTENECE A ORDEN DE COMPRA
                 if ($orden == '1') {
+                    $nro_orden = $this->ListarOrdenCompraxId($id_orden)->fetch()['numero'];
+
                     $sql .= "insert into log_orden_documento(id_orden_compra,id_producto,cant_orden,id_compra,cant_compra)
                             values('$id_orden','$id_producto','$cantidad_orden',(select max(id) from log_compra),'$cantidad');";
 
                     $sql .= "update log_orden_compra_detalle set despachado=despachado + $cantidad , pendiente=pendiente-$cantidad 
                         where id_orden_compra='$id_orden'  and id_producto='$id_producto' ;";
                 }
+
+                //Insertar detalles de compra
+                $sql .= "insert into log_compra_detalle(id_compra,id_producto,bonificacion,id_lote,fecha_vencimiento,cantidad,"
+                    . "precio_sin_igv,monto_igv,subtotal,precio_compra_ant,nro_orden)values((select max(id) from log_compra),'$id_producto',"
+                    . "'$bonificacion',$lote,'$fecha_vencimiento','$cantidad',"
+                    . "'$precio_sin_igv','$monto_igv','$subtotal','$precio_anterior','$nro_orden');";
             }
             $cn->prepare($sql)->execute();
             $cn->commit();
@@ -1253,7 +1260,7 @@ class Logistica
             $cn = $ocado->conectar();
             $cn->beginTransaction(); //inicia una transacción
             //$sql = "update examen_reactivo set estado='1' where id='$id'  ";
-            $sql="DELETE from examen_reactivo where id= $id;";
+            $sql = "DELETE from examen_reactivo where id= $id;";
             $cn->prepare($sql)->execute();
             $cn->commit(); //consignar cambios
             $cn = null;
