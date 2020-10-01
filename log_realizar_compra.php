@@ -18,8 +18,6 @@ require_once('cado/ClaseContabilidad.php');
 
 $osucursal = new Contabilidad();
 $lista_sucursales = $osucursal->ListarTodoSucursal();
-$lista_sucursales2 = $osucursal->ListarTodoSucursal();
-
 
 
 ?>
@@ -68,61 +66,7 @@ $lista_sucursales2 = $osucursal->ListarTodoSucursal();
         </tr>
     </table>
     <br>
-    <table width='100%' style="font-size:12px; font-weight:bold;">
-        <tr>
-
-            <td width="15%"><b>Tipo de doc.</b>
-                <select id="tipo_documento" class="input " onchange="ChangeTipoDoc()" style="width:95%">
-                    <option value="">Seleccione</option>
-                    <option value="2">FA</option>
-                    <option value="4">BV</option>
-
-                    <option value="3">RH</option>
-                    <option value="10">GR</option>
-                </select></td>
-            <td width="15%"><b>N° de doc.</b>
-                <input type="text" id="nro_documento" style="text-transform:uppercase;width:95%" class="input numero" value="" autocomplete="off"></td>
-            <td width="15%"><b>Fecha</b><input type="date" id="fecha" class='form-control' value="" style="width:95%" autocomplete="off"></td>
-
-            <td width="15%"><b>Tipo de compra</b>
-                <select id="tipo_compra" class="input " onchange="ChangeTipoCompra()" style="width:95%">
-                    <option value="">Seleccione</option>
-                    <option value="Contado">Contado</option>
-                    <option value="Crédito">Crédito</option>
-
-                </select></td>
-            <td width="13%" id='td-nro_dias'><b>N° de dias</b>
-                <input type="number" id="nro_dias" value="0" style="text-transform:uppercase;width:95%" class="input numero" value="" autocomplete="off"></td>
-            <td width="27%" align="center">
-                <b>Factura afecta a IGV</b>
-
-                <input type="checkbox" id="igv_detalle" class="" onclick="listar(); ClickIGV()">
-
-            </td>
-
-
-        </tr>
-
-    </table>
-    <hr>
-    <table width="100%" class="" style="font-size:12px; font-weight:bold;">
-
-
-        <tr>
-            <td width="100%"><b>Producto</b><br>
-                <select id="id_cmb_pro" class="input " onchange="ChangeProducto()" style="width: 95%">
-                    <option value="">Seleccione producto</option>
-                    <?php foreach ($lista_productos as $p) { ?>
-                        <option id='<?= "pro_" . $p[0] ?>' tipo_producto='<?= $p["tipo_producto"] ?>' nombre_producto='<?= $p["nombre"] ?>' value="<?= $p[0] ?>"><?= $p["nombre"] . " - " . $p["categoria"] ?> - <?= $p["tipo"] ?> </option>
-                    <?php } ?>
-                </select>
-            </td>
-
-
-
-        </tr>
-    </table>
-    <br>
+    
     <table width="100%" style="font-size:12px; font-weight:bold;">
         <tr>
 
@@ -148,6 +92,63 @@ $lista_sucursales2 = $osucursal->ListarTodoSucursal();
             </td>
     </table>
     <br>
+    <table width='100%' style="font-size:12px; font-weight:bold;">
+        <tr>
+
+            <td width="15%"><b>Tipo de doc.</b>
+                <select id="tipo_documento" class="input " onchange="ChangeTipoDoc()" style="width:95%">
+                    <option value="">Seleccione</option>
+                    <option value="2">FA</option>
+                    <option value="4">BV</option>
+
+                    <option value="3">RH</option>
+                    <option value="10">GR</option>
+                </select></td>
+            <td width="15%"><b>N° de doc.</b>
+                <input type="text" id="nro_documento" style="text-transform:uppercase;width:95%" class="input numero" value="" autocomplete="off"></td>
+            <td width="15%"><b>Fecha</b><input type="date" onchange="ChangeFecha()" id="fecha" class='form-control' value="" style="width:95%" autocomplete="off"></td>
+
+            <td width="15%"><b>Tipo de compra</b>
+                <select id="tipo_compra" class="input " onchange="ChangeTipoCompra()" style="width:95%">
+                    <option value="">Seleccione</option>
+                    <option value="Contado">Contado</option>
+                    <option value="Crédito">Crédito</option>
+
+                </select></td>
+            <td width="13%" id='td-nro_dias'><b>N° de dias</b>
+                <input type="number" id="nro_dias" value="0" style="text-transform:uppercase;width:95%" class="input numero" value="" autocomplete="off"></td>
+            <td width="27%" align="center">
+                <b>Factura afecta a IGV</b>
+
+                <input type="checkbox" id="igv_detalle" class="" onclick="listar(); ClickIGV()">
+
+            </td>
+
+
+        </tr>
+
+    </table>
+   
+    <hr>
+    <table width="100%" class="" style="font-size:12px; font-weight:bold;">
+
+
+        <tr>
+            <td width="100%"><b>Producto</b><br>
+                <select id="id_cmb_pro" class="input " onchange="ChangeProducto()" style="width: 95%">
+                    <option value="">Seleccione producto</option>
+                    <?php foreach ($lista_productos as $p) { ?>
+                        <option id='<?= "pro_" . $p[0] ?>' tipo_producto='<?= $p["tipo_producto"] ?>' nombre_producto='<?= $p["nombre"] ?>' value="<?= $p[0] ?>"><?= $p["nombre"] . " - " . $p["categoria"] ?> - <?= $p["tipo"] ?> </option>
+                    <?php } ?>
+                </select>
+            </td>
+
+
+
+        </tr>
+    </table>
+   
+    <br>
     <table width="100%" style="font-size:12px; font-weight:bold;">
         <tr>
 
@@ -159,7 +160,7 @@ $lista_sucursales2 = $osucursal->ListarTodoSucursal();
             <td width="15%"><b>Prec. anterior(S/.)</b>
                 <input type="text" id="precio_anterior" disabled="" value="0.00" style="width:95%" class="input numero" autocomplete="off"></td>
             <td width="15%"><b>Vencimiento</b>
-                <input type="date" id="fecha_vencimiento" style="width:95%" class='form-control' value="" autocomplete="off"></td>
+                <input type="date" id="fecha_vencimiento" onchange="ChangeFechaVenc()" style="width:95%" class='form-control' value="" autocomplete="off"></td>
 
             <td width="15%"><b>N° lote</b>
                 <input type="text" id="nro_lote" style="width:95%" class="input numero" autocomplete="off"></td>

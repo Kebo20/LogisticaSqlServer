@@ -1,19 +1,31 @@
 $(document).ready(function () {
     $("#afecto").focus();
     ListarAlmacenesGral()
-    var $producto = $("#id_cmb_pro").select2({
+    var $producto_select2 = $("#id_cmb_pro").select2({
         dropdownAutoWidth: true,
         width: '97%'
     });
-    var $proveedor = $("#id_cmb_prov").select2({
+    var $proveedor_select2 = $("#id_cmb_prov").select2({
         dropdownAutoWidth: true,
         width: '97%'
     });
-    var $almacen= $("#id_cmb_alm").select2({
+    var $almacen_select2= $("#id_cmb_alm").select2({
         dropdownAutoWidth: true,
         width: '97%'
     });
-    var $sucursal = $("#id_cmb_suc").select2({
+    var $sucursal_select2 = $("#id_cmb_suc").select2({
+        dropdownAutoWidth: true,
+        width: '97%'
+    });
+    var $tipo_documento_select2 = $("#tipo_documento").select2({
+        dropdownAutoWidth: true,
+        width: '97%'
+    });
+    var $tipo_compra_select2 = $("#tipo_compra").select2({
+        dropdownAutoWidth: true,
+        width: '97%'
+    });
+    var $bonificacion_select2 = $("#bonificacion").select2({
         dropdownAutoWidth: true,
         width: '97%'
     });
@@ -862,32 +874,6 @@ function LlenarDatos() {
 
 //DESPLAZAMIENTO FORMULARIO
 
-$("#fecha").keypress(function (e) {
-    if (e.which == 13) {
-
-
-        setTimeout(function () {
-            $("#tipo_compra").select2('open');
-        }, 200);
-    }
-});
-
-function ChangeProv() {
-    setTimeout(function () {
-        $("#tipo_documento").select2('open');
-    }, 200);
-}
-
-
-function ChangeTipoDoc() {
-    $("#nro_documento").focus();
-}
-
-$("#nro_documento").keypress(function (e) {
-    if (e.which == 13) {
-        $("#fecha").focus();
-    }
-});
 
 function ClickAfecto() {
     setTimeout(function () {
@@ -901,13 +887,72 @@ function ClickInafecto() {
     }, 200);
 }
 
+
+function ChangeProv() {
+    setTimeout(function () {
+        $("#id_cmb_suc").select2('open');
+    }, 200);
+}
+
+function ChangeSucursal() {
+
+    //$("#id_cmb_alm").val("").trigger('change');
+    $("#id_cmb_alm").html("");
+    
+    $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
+        sucursal: $("#id_cmb_suc").val(),
+
+    }, function (data) {
+
+        $("#id_cmb_alm").html(data);
+       
+    });
+
+    setTimeout(function () {
+        $("#id_cmb_alm").select2('open');
+
+    }, 200);
+   
+}
+function ChangeAlmacen() {
+    
+    $("#tipo_documento").select2('open');
+}
+
+
+function ChangeTipoDoc() {
+    setTimeout(function () {
+        $("#nro_documento").focus();
+    }, 200);
+}
+
+$("#nro_documento").keypress(function (e) {
+    if (e.which == 13) {
+        $("#fecha").focus();
+    }
+});
+
+function ChangeFecha(e) {
+   
+
+        setTimeout(function () {
+            $("#tipo_compra").select2('open');
+        }, 200);
+    
+}
+
 function ChangeTipoCompra() {
     if ($("#tipo_compra").val() == 'Contado') {
         $("#td-nro_dias").hide();
         $("#igv_detalle").focus();
+        setTimeout(function () {
+            $("#id_cmb_pro").select2('open');
+        }, 200);
     } else {
         $("#td-nro_dias").show();
-        $("#nro_dias").focus();
+        setTimeout(function () {
+            $("#nro_dias").focus();
+        }, 200);
     }
 
 
@@ -947,33 +992,11 @@ function ChangeProducto() {
     });
     
     setTimeout(function () {
-        $("#id_cmb_suc").select2('open');
+        $("#precio").focus()
     }, 200);
 }
 
 
-function ChangeSucursal() {
-
-    $("#id_cmb_alm").val("").trigger('change');
-    $("#id_cmb_alm").html("");
-    $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
-        sucursal: $("#id_cmb_suc").val(),
-
-    }, function (data) {
-
-        $("#id_cmb_alm").html(data);
-
-    });
-
-
-    setTimeout(function () {
-        $("#id_cmb_alm").select2('open');
-
-    }, 200);
-}
-function ChangeAlmacen() {
-    $("#precio").focus()
-}
 
 $("#precio").keypress(function (e) {
     if (e.which == 13) {
@@ -985,11 +1008,11 @@ $("#cantidad").keypress(function (e) {
         $("#fecha_vencimiento").focus();
     }
 })
-$("#fecha_vencimiento").keypress(function (e) {
-    if (e.which == 13) {
+function ChangeFechaVenc(e) {
+    
         $("#nro_lote").focus();
-    }
-})
+    
+}
 
 $("#nro_lote").keypress(function (e) {
     if (e.which == 13) {
