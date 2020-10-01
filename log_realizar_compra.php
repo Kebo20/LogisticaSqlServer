@@ -256,7 +256,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
         <div class="col-lg-3 col-md-12 ">
             <div class="form-group">
                 <br>
-                <button type="button" class="btn btn-white btn-info btn-bold" onClick="guardar()"><i class="fa fa-save"></i> Guardar</button>
+                <button id="btn_guardar" type="button" class="btn btn-white btn-info btn-bold" onClick="guardar()"><i class="fa fa-save"></i> Guardar</button>
                 <button type="button" class="btn btn-white btn-info btn-bold" onClick="cancelar()">
                     <icon class=" ace-icon fa fa-times red2"></icon>Cancelar
                 </button>

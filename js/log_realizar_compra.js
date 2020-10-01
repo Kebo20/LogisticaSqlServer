@@ -9,7 +9,7 @@ $(document).ready(function () {
         dropdownAutoWidth: true,
         width: '97%'
     });
-    var $almacen_select2= $("#id_cmb_alm").select2({
+    var $almacen_select2 = $("#id_cmb_alm").select2({
         dropdownAutoWidth: true,
         width: '97%'
     });
@@ -73,8 +73,6 @@ function llenarIGV() {
 
 
 function guardar() {
-
-
 
     if (compra.length == 0) {
         swal("Vacío", "Inserte datos", "warning");
@@ -177,6 +175,7 @@ function guardar() {
         }
     }
 
+    $("#btn_guardar").attr("disabled", true);
 
 
     $.post("controlador/Clogistica.php?op=NUEVO_COM", {
@@ -204,6 +203,8 @@ function guardar() {
         } else {
             swal("Error", "Compra no registrada ", "error");
         }
+        $("#btn_guardar").attr("disabled",false);
+
         cancelar();
 
     });
@@ -684,7 +685,6 @@ function DividirListar() {
 }
 
 function DividirEliminar(id) {
-
     dividir.splice(id, 1);
     DividirListar();
 }
@@ -789,21 +789,21 @@ function PintarFilaECOC($id) {
     ECLlenarOrdenDetalle($id);
 }
 
-function ListarAlmacenesGral(){
-    $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRAL",  function (data) {
+function ListarAlmacenesGral() {
+    $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRAL", function (data) {
 
         $("#id_cmb_alm").html(data)
 
-})
+    })
 }
 
-function SeleccionarAlmacenxOrden_Compra(id_orden){
-    $.post("controlador/Clogistica.php?op=ALMxORD_COMPRA",{id_orden :id_orden },function (data) {
+function SeleccionarAlmacenxOrden_Compra(id_orden) {
+    $.post("controlador/Clogistica.php?op=ALMxORD_COMPRA", { id_orden: id_orden }, function (data) {
 
         $("#id_cmb_alm").val(data).change();
-        console.log(data)
+        
 
-})
+    })
 }
 
 
@@ -815,22 +815,20 @@ function LlenarDatos() {
         swal("Debe seleccionar un Registro", "Obligatorio", "warning");
         return false;
     }
-
+    
     ListarAlmacenesGral()
+    
     $.post("controlador/Clogistica.php?op=LLENAR_ORD_COM_DET", {
         id: $id
     }, function (detalles) {
-        //console.log(detalles)
+        console.log(detalles)
 
         compra = new Array();
         $("#orden").val($id)
 
-
         SeleccionarAlmacenxOrden_Compra($id)
-        $("#id_cmb_suc").attr("disabled",true)
-
-        $("#id_cmb_alm").attr("disabled",true)
-
+        $("#id_cmb_suc").attr("disabled", true)
+        $("#id_cmb_alm").attr("disabled", true)
 
 
         orden_detalles = Array()
@@ -858,12 +856,10 @@ function LlenarDatos() {
                 compra.push(compra_detalle);
             }
 
-
         }
 
         listar();
         $("#ECModalOrdenCompra").modal('hide');
-
         console.log(compra);
     }, 'JSON');
 
@@ -898,24 +894,24 @@ function ChangeSucursal() {
 
     //$("#id_cmb_alm").val("").trigger('change');
     $("#id_cmb_alm").html("");
-    
+
     $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
         sucursal: $("#id_cmb_suc").val(),
 
     }, function (data) {
 
         $("#id_cmb_alm").html(data);
-       
+
     });
 
     setTimeout(function () {
         $("#id_cmb_alm").select2('open');
 
     }, 200);
-   
+
 }
 function ChangeAlmacen() {
-    
+
     $("#tipo_documento").select2('open');
 }
 
@@ -933,12 +929,12 @@ $("#nro_documento").keypress(function (e) {
 });
 
 function ChangeFecha(e) {
-   
 
-        setTimeout(function () {
-            $("#tipo_compra").select2('open');
-        }, 200);
-    
+
+    setTimeout(function () {
+        $("#tipo_compra").select2('open');
+    }, 200);
+
 }
 
 function ChangeTipoCompra() {
@@ -990,7 +986,7 @@ function ChangeProducto() {
     }, "JSON").fail(function () {
         $("#precio_anterior").val("0.00");
     });
-    
+
     setTimeout(function () {
         $("#precio").focus()
     }, 200);
@@ -1009,9 +1005,9 @@ $("#cantidad").keypress(function (e) {
     }
 })
 function ChangeFechaVenc(e) {
-    
-        $("#nro_lote").focus();
-    
+
+    $("#nro_lote").focus();
+
 }
 
 $("#nro_lote").keypress(function (e) {

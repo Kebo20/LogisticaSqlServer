@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     var $sucursal = $("#OCid_cmb_suc").select2({
         dropdownAutoWidth: true,
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
 
 
-    $('.numero').on("keypress", function() {
+    $('.numero').on("keypress", function () {
         if (event.keyCode > 47 && event.keyCode < 60 || event.keyCode == 46) {
 
         } else {
@@ -57,9 +57,9 @@ $(document).ready(function() {
 
 
 //DEZPLAZAR POR FORMULARIO
-$("#OCid_cmb_suc").change(function() {
+$("#OCid_cmb_suc").change(function () {
     almacenxsucursal()
-    setTimeout(function() {
+    setTimeout(function () {
         $("#OCid_cmb_alm").select2('open');
 
     }, 100);
@@ -68,15 +68,15 @@ $("#OCid_cmb_suc").change(function() {
 
 
 
-$("#OCid_cmb_alm").change(function() {
+$("#OCid_cmb_alm").change(function () {
 
     $("#OCtipo").select2('open');
 
 
 });
 
-$("#OCtipo").change(function(e) {
-    setTimeout(function() {
+$("#OCtipo").change(function (e) {
+    setTimeout(function () {
         $("#OCcategoria").select2('open');
         OCListarProductos()
 
@@ -84,8 +84,8 @@ $("#OCtipo").change(function(e) {
 
 
 });
-$("#OCcategoria").change(function(e) {
-    setTimeout(function() {
+$("#OCcategoria").change(function (e) {
+    setTimeout(function () {
         $("#OCnro").focus();
         OCListarProductos()
 
@@ -94,13 +94,13 @@ $("#OCcategoria").change(function(e) {
 
 
 });
-$("#OCnro").keypress(function(e) {
+$("#OCnro").keypress(function (e) {
     if (e.which == 13) {
         $("#OCfecha").focus();
     }
 });
 
-$("#OCfecha").keypress(function(e) {
+$("#OCfecha").keypress(function (e) {
 
     if (e.which == 13) {
         $("#OCreferencia").focus()
@@ -110,7 +110,7 @@ $("#OCfecha").keypress(function(e) {
 
 
 
-$("#OCreferencia").keypress(function(e) {
+$("#OCreferencia").keypress(function (e) {
     if (e.which == 13) {
 
         $("#OCid_cmb_pro").select2('open');
@@ -118,16 +118,16 @@ $("#OCreferencia").keypress(function(e) {
     }
 
 });
-$("#OCid_cmb_pro").change(function() {
+$("#OCid_cmb_pro").change(function () {
 
     LlenarStockUnidad()
 
-    setTimeout(function() {
+    setTimeout(function () {
         $("#OCcantidad").focus();
     }, 300);
 
 });
-$("#OCcantidad").keypress(function(e) {
+$("#OCcantidad").keypress(function (e) {
 
     if (e.which == 13) {
         OCAñadirDetalle();
@@ -137,7 +137,7 @@ $("#OCcantidad").keypress(function(e) {
 
 
 
-$(document).keydown(function(e) {
+$(document).keydown(function (e) {
 
     if (e.ctrlKey && e.keyCode == 83) {
         e.preventDefault();
@@ -151,8 +151,8 @@ $(document).keydown(function(e) {
 });
 
 
-$("#OCbuscar-id_cmb_suc").change(function() {
-    setTimeout(function() {
+$("#OCbuscar-id_cmb_suc").change(function () {
+    setTimeout(function () {
         almacenxsucursal2()
     }, 300);
 
@@ -165,38 +165,38 @@ $("#OCbuscar-id_cmb_suc").change(function() {
 
 $("#OCbtn_guardar,#OCbtn_imprimir,#OCbtn_limpiar,#OCbtn_finalizar,#OCbtn_anular").attr("disabled", "true");
 $("input,select").attr("disabled", "true");
-$("#OCbtn_nuevo").click(function() {
+$("#OCbtn_nuevo").click(function () {
     $("#OCbtn_guardar,input,select").attr("disabled", false);
     $("#OCbtn_buscar,#OCusuario").attr("disabled", "true")
-    $("#OCid_cmb_suc").select2('open');
+    // $("#OCid_cmb_suc").select2('open');
 
 
 });
-$("#OCbtn_guardar").click(function() {
+$("#OCbtn_guardar").click(function () {
     OCguardar();
     OCcancelar()
 
 });
-$("#OCbtn_buscar").click(function() {
+$("#OCbtn_buscar").click(function () {
     OCListarBuscar();
     $("#OCbtn_nuevo").attr("disabled", "true");
     $(".input").attr("disabled", false);
     $("#OCModal").modal();
 });
-$("#OCbtn_imprimir").click(function() {
+$("#OCbtn_imprimir").click(function () {
 
 });
-$("#OCbtn_limpiar").click(function() {
+$("#OCbtn_limpiar").click(function () {
     OCcancelar()
 
 });
-$("#OCbtn_cancelar").click(function() {
+$("#OCbtn_cancelar").click(function () {
     OCcancelar()
     $("#OCbtn_nuevo,#OCbtn_buscar").attr("disabled", false);
     $("#OCbtn_guardar,#OCbtn_imprimir,#OCbtn_limpiar,#OCbtn_finalizar,#OCbtn_anular").attr("disabled", "true");
 
 });
-$("#OCbtn_anular").click(function() {
+$("#OCbtn_anular").click(function () {
 
     var $ident = $("#IdFilaOC").val();
     if ($ident == 0) {
@@ -208,7 +208,7 @@ $("#OCbtn_anular").click(function() {
 
         estado: "anulada",
         id: $("#id_OC").val()
-    }, function(data) {
+    }, function (data) {
         if (data == 1) {
             swal("Correcto", "Orden anulada", "success");
         } else {
@@ -219,7 +219,7 @@ $("#OCbtn_anular").click(function() {
 
 
 });
-$("#OCbtn_finalizar").click(function() {
+$("#OCbtn_finalizar").click(function () {
     var $ident = $("#IdFilaOC").val();
     if ($ident == 0) {
         swal("Debe seleccionar un Registro", "Obligatorio", "warning");
@@ -230,7 +230,7 @@ $("#OCbtn_finalizar").click(function() {
 
         estado: "finalizada",
         id: $("#id_OC").val()
-    }, function(data) {
+    }, function (data) {
         if (data == 1) {
             swal("Correcto", "Orden finalizada", "success");
         } else {
@@ -262,7 +262,7 @@ function OCAñadirDetalle() {
 
     if ($("#OCid_cmb_pro").val() == "") {
         swal("Campo requerido", "Seleccione un producto", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCid_cmb_pro").select2('open');
         }, 200);
         return false;
@@ -297,7 +297,7 @@ function OCAñadirDetalle() {
             $("#OCcantidad").val("");
             $("#OCunidad").val("");
 
-            setTimeout(function() {
+            setTimeout(function () {
                 $("#OCid_cmb_pro").val("").trigger("change");
 
                 $("#OCid_cmb_pro").trigger('chosen:open');
@@ -318,7 +318,7 @@ function OCAñadirDetalle() {
     OClistar();
     $("#OCcantidad").val("");
     $("#OCunidad").val("");
-    setTimeout(function() {
+    setTimeout(function () {
         $("#OCid_cmb_pro").val("").trigger('chosen:updated');
 
         $("#OCid_cmb_pro").trigger('select:open');
@@ -338,14 +338,14 @@ function LlenarStockUnidad() {
 
     $.post("controlador/Clogistica.php?op=LLENAR_PRO", {
         id: $("#OCid_cmb_pro").val()
-    }, function(data) {
+    }, function (data) {
         $("#OCunidad").val(data.unidad)
     }, 'JSON');
 
 
     $.post("controlador/Clogistica.php?op=LLENAR_PRO", {
         id: $("#OCid_cmb_pro").val()
-    }, function(data) {
+    }, function (data) {
         $("#OCstock").val(data.stock)
     }, 'JSON');
 }
@@ -356,7 +356,7 @@ function OCListarProductos() {
     $.post("controlador/Clogistica.php?op=LISTAR_PRO_OC", {
         tipo: $("#OCtipo").val(),
         categoria: $("#OCcategoria").val()
-    }, function(data) {
+    }, function (data) {
         $("#OCid_cmb_pro").html(data);
 
 
@@ -372,7 +372,7 @@ function almacenxsucursal() {
     $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
         sucursal: $("#OCid_cmb_suc").val(),
 
-    }, function(data) {
+    }, function (data) {
 
         $("#OCid_cmb_alm").html(data);
         console.log(data);
@@ -389,14 +389,14 @@ function OCguardar() {
     }
     if ($("#OCid_cmb_suc").val() == "") {
         swal("Campo requerido", "Seleccione una sucursal", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCid_cmb_suc").select2('open');
         }, 200);
         return false;
     }
     if ($("#OCid_cmb_alm").val() == "") {
         swal("Campo requerido", "Seleccione un almacén", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCid_cmb_alm").select2('open');
         }, 200);
         return false;
@@ -404,7 +404,7 @@ function OCguardar() {
 
     if ($("#OCtipo").val() == "") {
         swal("Campo requerido", "Seleccione un tipo de orden", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCtipo").select2('open');
         }, 200);
         return false;
@@ -436,7 +436,7 @@ function OCguardar() {
         tipo: $("#OCtipo").val(),
         valor: $("#OCvalor").val()
 
-    }, function(data) {
+    }, function (data) {
 
         if (data == 1) {
             swal("Correcto", "Orden registrada correctamente", "success");
@@ -468,7 +468,7 @@ function OCcancelar() {
     $("#OCcantidad").val("");
     $("#OCunidad").val("");
     $("#OCvalor").val("1")
-    setTimeout(function() {
+    setTimeout(function () {
         $("#OCbtn_guardar,#OCbtn_imprimir,#OCbtn_limpiar,#OCbtn_finalizar,#OCbtn_anular").attr("disabled", "true");
         $(".input").attr("disabled", "true");
 
@@ -483,8 +483,8 @@ function PintarFilaOC($id) {
     var $par = $idfilaanterior.split('_')
     var $par_int = parseInt($par[1]);
     // alert($par_int)
-    $("#" + $idfilaanterior).css("background-color","white")
-    $("#" + $idfilaanterior).css("color","black")
+    $("#" + $idfilaanterior).css("background-color", "white")
+    $("#" + $idfilaanterior).css("color", "black")
     if ($par_int % 2 == 0) {
         // alert("hola")
         $("#" + $idfilaanterior).css({
@@ -503,8 +503,8 @@ function PintarFilaOC($id) {
         "background-color": "darkgrey",
         "color": "#FFFFFF"
     });*/
-    $("#" + $id).css("background-color","#6FA0B9")
-    $("#" + $id).css("color","white")
+    $("#" + $id).css("background-color", "#6FA0B9")
+    $("#" + $id).css("color", "white")
     $("#IdFilaOC").val($id);
 
 }
@@ -519,12 +519,12 @@ function OCListarBuscar() {
     var $almacen = $("#OCbuscar-id_cmb_alm").val();
     $.post('controlador/Clogistica.php?op=LIS_ORD_COM', {
 
-            fecha: $fecha,
-            estado: $estado,
-            nro: $nro,
-            almacen: $almacen
-        },
-        function(data) {
+        fecha: $fecha,
+        estado: $estado,
+        nro: $nro,
+        almacen: $almacen
+    },
+        function (data) {
             $("#IdCuerpoOCbuscar").html(data);
             $("#IdFilaOC").val(0);
         });
@@ -534,7 +534,7 @@ function almacenxsucursal2() {
     $("#OCbuscar-id_cmb_alm").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
         sucursal: $("#OCbuscar-id_cmb_suc").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#OCbuscar-id_cmb_alm").html(data);
         // console.log(data);
@@ -543,7 +543,8 @@ function almacenxsucursal2() {
 }
 
 function OCLlenarDatos() {
-    $("#OCbtn_guardar,#OCbtn_imprimir,#OCbtn_limpiar,#OCbtn_finalizar,#OCbtn_anular").attr("disabled", false);
+    $("#OCbtn_guardar,input,select").attr("disabled", false);
+    $("#OCbtn_buscar,#OCusuario").attr("disabled", "true")
 
     $("#OCvalor").val(2);
     var $ident = $("#IdFilaOC").val();
@@ -555,7 +556,7 @@ function OCLlenarDatos() {
     $.post("controlador/Clogistica.php?op=LLENAR_ORD_COM", {
 
         id: $id
-    }, function(data) {
+    }, function (data) {
         console.log(data);
         /*$.blockUI({
             css: {
@@ -574,25 +575,23 @@ function OCLlenarDatos() {
         $("#OCid_cmb_suc").val(data.id_sucursal).trigger("change");
 
 
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCid_cmb_alm").val(data.id_almacen).trigger("change");
             $("#OCid_cmb_alm").select2("close");
-
         }, 200);
-        setTimeout(function() {
-
+        setTimeout(function () {
             $("#OCtipo").val(data.tipo).trigger("change");
             $("#OCtipo").select2("close");
         }, 200);
 
-        setTimeout(function() {
+        setTimeout(function () {
             $("#OCModal").modal("hide");
         }, 100);
 
         $.post("controlador/Clogistica.php?op=LLENAR_ORD_COM_DET", {
 
             id: data.id
-        }, function(detalles) {
+        }, function (detalles) {
             //console.log(detalles)
             orden_compra = new Array();
 
