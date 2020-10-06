@@ -266,13 +266,31 @@ date_default_timezone_set('America/Lima');
 				</li>
 
 
-				<li class="hover" id="13" onClick="Activar('13');Kardex();">
-					<a href="#">
+				<li class="hover" id="13" onClick="Activar('13');">
+					<a href="#" class="dropdown-toggle">
 						<i class="menu-icon" style="margin:0; padding:0">
 							<img src="imagenes/kardex.png" style="border:0" height="30" width="30"></i>
 						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">KARDEX </span>
 					</a>
 					<b class="arrow"></b>
+					<ul class="submenu">
+						<li class="hover" id="" onClick="Activar('13');Kardex();">
+							<a href="#">
+								<i class="menu-icon fa fa-caret-right" style="margin:0; padding:0"></i>
+								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">POR PRODUCTO</span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+						<li class="hover" id="" onClick="Activar('13');KardexAlmacen();">
+							<a href="#">
+								<i class="menu-icon fa fa-caret-right" style="margin:0; padding:0"></i>
+								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">POR ALMACÉN </span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+					</ul>
 				</li>
 
 				<li class="hover" id="14" onClick="Activar('14');OrdenCompra();">
@@ -303,7 +321,7 @@ date_default_timezone_set('America/Lima');
 					<a href="#">
 						<i class="menu-icon" style="margin:0; padding:0">
 							<img src="imagenes/orden_documento.png" style="border:0" height="30" width="30"></i>
-						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">Orden documento </span>
+						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">ORDEN DOCUMENTO</span>
 					</a>
 					<b class="arrow"></b>
 				</li>

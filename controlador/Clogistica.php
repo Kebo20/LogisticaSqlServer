@@ -131,13 +131,13 @@ switch ($_GET["op"]) {
         break;
 
 
-        case 'ALMxORD_COMPRA':
-            $id_orden = $_POST['id_orden'];
-    
-            $id_almacen = $olog->ListarOrdenCompraxId($id_orden)->fetch()['id_almacen'];
+    case 'ALMxORD_COMPRA':
+        $id_orden = $_POST['id_orden'];
 
-            echo $id_almacen;
-            break;
+        $id_almacen = $olog->ListarOrdenCompraxId($id_orden)->fetch()['id_almacen'];
+
+        echo $id_almacen;
+        break;
     case 'NUEVO_ALM':
         $nombre = $_POST['nombre'];
         $responsable = $_POST['responsable'];
@@ -1054,8 +1054,9 @@ switch ($_GET["op"]) {
             $subArray[] = $kardex[8];
             $subArray[] = $kardex[9];
             $subArray[] = $kardex[10];
-            $subArray[] = $kardex[12];
             $subArray[] = $kardex[11];
+            $subArray[] = $kardex[12];
+           
 
 
 
@@ -1080,6 +1081,57 @@ switch ($_GET["op"]) {
             echo ceil($cont / $paginacion);
         }
         break;
+
+
+    case 'LIS_KARDEX_ALM':
+        $datos = array();
+        $pagina = $_GET["pagina"];
+        $ultimo_pagina = $pagina * $paginacion;
+        $primero_pagina = $ultimo_pagina - $paginacion;
+        $lista = $olog->ListarKardexAlmacen($_GET["producto"], $_GET["almacen"], $primero_pagina, $paginacion);
+        $cont = $primero_pagina;
+        foreach ($lista as $kardex) {
+            $cont++;
+            $subArray = array();
+            $subArray[] = $kardex[0];
+            $subArray[] = $kardex[1];
+            $subArray[] = $kardex[2];
+            $subArray[] = $kardex[3];
+            $subArray[] = $kardex[4];
+            $subArray[] = $kardex[5];
+            $subArray[] = $kardex[6];
+            $subArray[] = $kardex[7];
+            $subArray[] = $kardex[8];
+            $subArray[] = $kardex[9];
+            $subArray[] = $kardex[10];
+            $subArray[] = $kardex[11];
+            $subArray[] = $kardex[12];
+        
+
+
+
+            $datos[] = $subArray;
+        }
+
+        echo json_encode($datos);
+        break;
+
+    case "PAG_KARDEX_ALM":
+
+        $cont = $olog->TotalKardexAlmacen($_GET["producto"], $_GET["almacen"])->fetch()[0];
+
+        if ($cont == 0) {
+            echo 0;
+            break;
+        }
+
+        if ($cont < $paginacion) {
+            echo "1";
+        } else {
+            echo ceil($cont / $paginacion);
+        }
+        break;
+
 
 
     case "NUEVO_MAQUINA":

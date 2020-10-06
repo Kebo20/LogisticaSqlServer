@@ -46,6 +46,7 @@ function Lotes() { $.post('log_lote.php', {}, function (datitos) { $("#IdCuerpo"
 function FraccionarLote() { $.post('log_fraccionar_lote.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }
 
 function Kardex() { $.post('log_kardex.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }
+function KardexAlmacen(){ $.post('log_kardex_almacen.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) };
 
 function OrdenCompra() { $.post('log_orden_compra.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }
 function RealizarCompra() { $.post('log_realizar_compra.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }

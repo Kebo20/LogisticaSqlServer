@@ -5,8 +5,9 @@ include 'cado/ClaseLogistica.php';
 
 $fila = 13;
 
-$objPHPExcel = new PHPExcel();
-$objPHPExcel->getProperties()->setCreator("Kevin Alberca")->setDescription("Reporte de usuarios");
+//$objPHPExcel = new PHPExcel();
+//$objPHPExcel->getProperties()->setCreator("Kevin Alberca")->setDescription("Reporte de usuarios");
+$objPHPExcel = PHPExcel_IOFactory::load("plantilla-kardex.xlsx");
 
 /*$gdImage = imagecreatefrompng('images/logoe.png'); //Logotipo
 $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
@@ -32,7 +33,7 @@ $estiloTituloReporte = array(
     ),
     'borders' => array(
         'allborders' => array(
-            'style' => PHPExcel_Style_Border::BORDER_NONE
+            'style' => PHPExcel_Style_Border::BORDER_THIN
         )
     ),
     'alignment' => array(
@@ -130,9 +131,9 @@ $estiloInformacion->applyFromArray(array(
     )
 ));
 
-$objPHPExcel->getActiveSheet()->getStyle('A1:H9')->applyFromArray($estiloTituloReporte);
-$objPHPExcel->getActiveSheet()->getStyle('A11:M12')->applyFromArray($estiloTituloColumnas);
-$objPHPExcel->getActiveSheet()->getStyle('A13:M13')->applyFromArray($estiloSubtitulos);
+//$objPHPExcel->getActiveSheet()->getStyle('A1:B9')->applyFromArray($estiloTituloReporte);
+//$objPHPExcel->getActiveSheet()->getStyle('A11:M12')->applyFromArray($estiloTituloColumnas);
+//$objPHPExcel->getActiveSheet()->getStyle('A13:M13')->applyFromArray($estiloSubtitulos);
 
 
 
@@ -222,7 +223,7 @@ $objPHPExcel->getActiveSheet()->setCellValue('M12', 'Costo total (S/.)');
 $lista = $olog->ListarKardex($_GET['producto'],0,10000);
 $i = 0;
 $fin=$lista->rowCount()+12;
-$objPHPExcel->getActiveSheet()->getStyle('A13:M'.$fin)->applyFromArray($estiloCuerpo);
+//$objPHPExcel->getActiveSheet()->getStyle('A13:M'.$fin)->applyFromArray($estiloCuerpo);
 
 foreach ($lista as $row) {
     $i++;
@@ -244,19 +245,19 @@ foreach ($lista as $row) {
     $fila++;
 }
 
-//header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-//header('Content-Disposition: attachment;filename="Productos.xlsx"');
-//header('Cache-Control: max-age=0');
-//
-//$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-//$objWriter->save('php://output');
-
-
-
-header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment;filename="Reporte Kardex.xls"');
+header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+header('Content-Disposition: attachment;filename="Reporte-Kardex.xlsx"');
 header('Cache-Control: max-age=0');
 
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
 $objWriter->save('php://output');
+
+
+
+//header('Content-Type: application/vnd.ms-excel');
+//header('Content-Disposition: attachment;filename="Reporte-Kardex.xls"');
+//header('Cache-Control: max-age=0');
+
+//$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+//$objWriter->save('php://output');
 ?>

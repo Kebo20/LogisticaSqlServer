@@ -1,14 +1,57 @@
-var $producto = $("#producto").select2({ dropdownAutoWidth: true, width: '100%' });
+var $producto = $("#producto").select2({ dropdownAutoWidth: true, width: '97%' });
+var $almacen_select2 = $("#id_cmb_alm").select2({
+    dropdownAutoWidth: true,
+    width: '97%'
+});
+var $sucursal_select2 = $("#id_cmb_suc").select2({
+    dropdownAutoWidth: true,
+    width: '97%'
+});
 function ReporteExcel() {
     if ($("#producto").val() == '') {
         swal("Seleccione un producto", "", "warning")
         return false;
 
     }
-    window.location = 'reporte_excel_kardex.php?producto=' + $("#producto").val()
+    if ($("#id_cmb_alm").val() == '') {
+        swal("Seleccione un almacén", "", "warning")
+        return false;
+
+    }
+    window.location = 'reporte_excel_kardex_almacen.php?producto=' + $("#producto").val()+ "&almacen="+ $("#id_cmb_alm").val() 
 }
 
 Listar(1);
+
+function ChangeProducto() {
+
+    setTimeout(function () {
+        $("#id_cmb_suc").select2('open');
+
+    }, 200);
+
+}
+function ChangeSucursal() {
+
+    //$("#id_cmb_alm").val("").trigger('change');
+    $("#id_cmb_alm").html("");
+
+    $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
+        sucursal: $("#id_cmb_suc").val(),
+
+    }, function (data) {
+
+        $("#id_cmb_alm").html(data);
+
+    });
+
+    setTimeout(function () {
+        $("#id_cmb_alm").select2('open');
+
+    }, 200);
+
+}
+
 function Listar(pagina) {
 
     //  $("#lista").html("<tr><td class='text-center' colspan='5'>Cargando ...<td></tr>");
@@ -16,7 +59,7 @@ function Listar(pagina) {
 
     $.ajax({
 
-        url: 'controlador/Clogistica.php?op=LIS_KARDEX&producto=' + $("#producto").val() + "&pagina=" + pagina,
+        url: 'controlador/Clogistica.php?op=LIS_KARDEX_ALM&producto=' + $("#producto").val() + "&almacen="+ $("#id_cmb_alm").val() +"&pagina=" + pagina,
         type: "POST",
         dataType: "json",
 
@@ -58,7 +101,7 @@ function Listar(pagina) {
 
             $.ajax({
 
-                url: 'controlador/Clogistica.php?op=PAG_KARDEX&producto=' + $("#producto").val(),
+                url: 'controlador/Clogistica.php?op=PAG_KARDEX_ALM&producto=' + $("#producto").val()+ "&almacen="+ $("#id_cmb_alm").val() ,
                 type: "POST",
                 dataType: "json",
 

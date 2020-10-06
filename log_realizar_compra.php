@@ -90,6 +90,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
 
                 </select>
             </td>
+        </tr>
     </table>
     <br>
     <table width='100%' style="font-size:12px; font-weight:bold;">

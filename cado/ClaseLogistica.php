@@ -32,6 +32,13 @@ class Logistica
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
+    function ListarAlmacenSucursalxid($id)
+    {
+        $ocado = new cado();
+        $sql = "select *,a.nombre as nombre_almacen,s.nombre as nombre_sucursal from log_almacen a inner join cont_sucursal s on s.id=a.id_sucursal where  a.id=$id ";
+        $ejecutar = $ocado->ejecutar($sql);
+        return $ejecutar;
+    }
 
     function ListarAlmacenxSucursal($sucursal)
     {
@@ -937,17 +944,16 @@ class Logistica
 
     //FUNCIONES PARA KARDEX
 
-
     function ListarKardex($id_producto, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,if(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
-        if(k.tipo_movimiento=1,precio,'') as precio_entrada, if(k.tipo_movimiento=1,costo_total,'') as costo_total_entrada, 
-        if(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,if(k.tipo_movimiento=2,precio,'') as precio_salida, 
-        if(k.tipo_movimiento=2,costo_total,'') as costo_total_salida ,
-        if(k.tipo_movimiento=1, @cantidad_final := @cantidad_final + k.cantidad ,@cantidad_final := @cantidad_final - k.cantidad )as cantidad_final,
-        if(k.tipo_movimiento=1, CAST(@costo_total_final := @costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST(@costo_total_final := @costo_total_final - k.costo_total as DECIMAL(18,2) )  )as costo_total_final,
-        CAST(@costo_total_final/@cantidad_final as DECIMAL(18,2) )
+        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
+        IF(k.tipo_movimiento=1,precio,'') as precio_entrada, IF(k.tipo_movimiento=1,costo_total,'') as costo_total_entrada, 
+        IF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IF(k.tipo_movimiento=2,precio,'') as precio_salida, 
+        IF(k.tipo_movimiento=2,costo_total,'') as costo_total_salida ,
+        IF(k.tipo_movimiento=1, @cantidad_final := @cantidad_final + k.cantidad ,@cantidad_final := @cantidad_final - k.cantidad )as cantidad_final,
+        IF(@cantidad_final=0,CAST(0 as DECIMAL(18,2)),CAST( (IF(k.tipo_movimiento=1, CAST(@costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST( @costo_total_final - k.costo_total as DECIMAL(18,2)) )) /@cantidad_final as DECIMAL(18,2))),
+        IF(k.tipo_movimiento=1, CAST(@costo_total_final := @costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST(@costo_total_final := @costo_total_final - k.costo_total as DECIMAL(18,2)) )as costo_total_final
 
        FROM `log_kardex` k
        JOIN (select @cantidad_final := 0) s
@@ -966,6 +972,35 @@ class Logistica
         return $ejecutar;
     }
 
+    function ListarKardexAlmacen($id_producto,$id_almacen, $inicio, $fin)
+    {
+        $ocado = new cado();
+        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
+        IF(k.tipo_movimiento=1,precio,'') as precio_entrada, IF(k.tipo_movimiento=1,costo_total,'') as costo_total_entrada, 
+        IF(k.tipo_movimiento=2,k.cantidad,'') as cantidad_salida,IF(k.tipo_movimiento=2,precio,'') as precio_salida, 
+        IF(k.tipo_movimiento=2,costo_total,'') as costo_total_salida ,
+        IF(k.tipo_movimiento=1, @cantidad_final := @cantidad_final + k.cantidad ,@cantidad_final := @cantidad_final - k.cantidad )as cantidad_final,
+        IF(@cantidad_final=0,CAST(0 as DECIMAL(18,2)),CAST( (if(k.tipo_movimiento=1, CAST(@costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST( @costo_total_final - k.costo_total as DECIMAL(18,2)) )) /@cantidad_final as DECIMAL(18,2))),
+        IF(k.tipo_movimiento=1, CAST(@costo_total_final := @costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST(@costo_total_final := @costo_total_final - k.costo_total as DECIMAL(18,2)) )as costo_total_final
+
+
+       FROM `log_kardex` k
+       JOIN (select @cantidad_final := 0) s
+       JOIN (select @costo_total_final := 0) c
+       JOIN log_lote l ON l.id=k.id_lote 
+       where k.id_producto=$id_producto and l.id_almacen=$id_almacen  order by k.fecha asc   limit $inicio,$fin ";
+        $listar = $ocado->ejecutar($sql);
+        return $listar;
+    }
+
+
+    function TotalKardexAlmacen($id_producto,$id_almacen)
+    {
+        $ocado = new cado();
+        $sql = "SELECT count(*) from log_kardex k JOIN log_lote l ON l.id=k.id_lote  where k.id_producto='$id_producto' and l.id_almacen=$id_almacen ;  ";
+        $ejecutar = $ocado->ejecutar($sql);
+        return $ejecutar;
+    }
 
 
     function TransferenciaAlmacen($almacen_origen, $almacen_destino, $cantidad, $unidad, $id_lote)

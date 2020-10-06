@@ -101,8 +101,6 @@ $("#TAproducto").change(function () {
 });
 
 
-
-
 function MostrarStockUnidad() {
 
     $.post("controlador/Clogistica.php?op=PRODUCTO_FRACCIONxLOTE", {
