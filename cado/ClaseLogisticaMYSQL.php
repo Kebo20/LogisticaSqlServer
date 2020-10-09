@@ -1,19 +1,16 @@
 <?php
 
 require_once('conexion.php');
-//MYSQL
-//limit $inicio,$numero_filas
-//SQLserver
-//OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY
+
 class Logistica
 {
 
     // FUNCIONES PARA EL MANTENEDOR ALMACÉN	   
-    function ListarAlmacen($q, $inicio, $numero_filas)
+    function ListarAlmacen($q, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "select a.*,s.nombre as sucursal from log_almacen a inner join cont_sucursal s on s.id=a.id_sucursal where  
-        a.estado=0  and (a.nombre like '%$q%' or a.responsable like '%$q%' ) order by a.nombre asc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY";
+        a.estado=0  and (a.nombre like '%$q%' or a.responsable like '%$q%' ) order by a.nombre asc limit $inicio,$fin";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -165,12 +162,12 @@ class Logistica
     }
 
 
-    function ListarProductoLog($q, $inicio, $numero_filas)
+    function ListarProductoLog($q, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "select p.*,c.nombre as categoria,pf.nombre  as nombre_producto_fraccion,IIF(p.tipo_producto='0','PRODUCTO','SERVICIO') as tipo ,u.codigo as codigo_unidad,u.descripcion as descripcion_unidad from log_producto p 
+        $sql = "select p.*,c.nombre as categoria,pf.nombre  as nombre_producto_fraccion,if(p.tipo_producto='0','PRODUCTO','SERVICIO') as tipo ,u.codigo as codigo_unidad,u.descripcion as descripcion_unidad from log_producto p 
         inner join log_categoria_producto c on c.id=p.id_categoria left join log_producto pf on p.id_producto_fraccion=pf.id left join log_codigo_unidad_medida u on p.unidad=u.id
-         where p.nombre like '%$q%' and p.estado=0  order by p.nombre asc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY";
+         where p.nombre like '%$q%' and p.estado=0  order by p.nombre asc limit $inicio,$fin";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -188,7 +185,7 @@ class Logistica
     function ListarSoloProductos()
     {
         $ocado = new cado();
-        $sql = "select p.*,c.nombre as categoria,IIF(p.tipo_producto=0,'PRODUCTO','SERVICIO') as tipo from log_producto p inner join log_categoria_producto c on c.id=p.id_categoria
+        $sql = "select p.*,c.nombre as categoria,if(p.tipo_producto=0,'PRODUCTO','SERVICIO') as tipo from log_producto p inner join log_categoria_producto c on c.id=p.id_categoria
          where p.estado=0 and p.tipo_producto=0 ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
@@ -196,7 +193,7 @@ class Logistica
     function ListarReactivos()
     {
         $ocado = new cado();
-        $sql = "select p.*,c.nombre as categoria,IIF(p.tipo_producto='0','PRODUCTO','SERVICIO') as tipo ,u.codigo as codigo_unidad,u.descripcion as descripcion_unidad from log_producto p 
+        $sql = "select p.*,c.nombre as categoria,if(p.tipo_producto='0','PRODUCTO','SERVICIO') as tipo ,u.codigo as codigo_unidad,u.descripcion as descripcion_unidad from log_producto p 
         inner join log_categoria_producto c on c.id=p.id_categoria inner join log_codigo_unidad_medida u on p.unidad=u.id
          where c.id=13 and p.estado=0  order by p.nombre asc ";
         $ejecutar = $ocado->ejecutar($sql);
@@ -310,10 +307,10 @@ class Logistica
     }
 
     // FUNCIONES PARA EL MANTENEDOR CATEGORÍA	   
-    function ListarCategoriaProducto($q, $inicio, $numero_filas)
+    function ListarCategoriaProducto($q, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "select * from log_categoria_producto where  nombre like '%$q%' and estado=0 order by nombre asc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY";
+        $sql = "select * from log_categoria_producto where  nombre like '%$q%' and estado=0 order by nombre asc limit $inicio,$fin";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -544,10 +541,10 @@ class Logistica
 
     //FUNCIONES PARA EL MANTENEDOR PROVEEDOR
 
-    function ListarProveedor($q, $inicio, $numero_filas)
+    function ListarProveedor($q, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "select * from log_proveedor where  nombre like '%$q%' and estado='0' order by nombre asc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY";
+        $sql = "select * from log_proveedor where  nombre like '%$q%' and estado='0' order by nombre asc limit $inicio,$fin";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -769,12 +766,12 @@ class Logistica
     }
 
 
-    function ListarCompra($q, $inicio, $numero_filas)
+    function ListarCompra($q, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "select c.fecha,u.user,prov.nombre,c.tipo_documento,ta.descripcion,c.monto_sin_igv,c.igv,c.monto_igv,"
             . "c.total ,c.id,c.nota_credito,c.fecha_sistema,c.tipo_compra,c.nro_documento,c.nro_dias from log_compra c inner join conf_usuario u on c.id_usuario=u.id inner join"
-            . " admin_tipo_afectacion_igv ta on ta.id=c.tipo_afectacion inner join log_proveedor prov on prov.id=c.id_proveedor where c.nro_documento like '%$q%' order by c.fecha desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
+            . " admin_tipo_afectacion_igv ta on ta.id=c.tipo_afectacion inner join log_proveedor prov on prov.id=c.id_proveedor where c.nro_documento like '%$q%' order by c.fecha desc limit $inicio,$fin ;";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -809,12 +806,12 @@ class Logistica
         return $ejecutar;
     }
     // FUNCIONES PARA EL MANTENEDOR LOTE
-    function ListarLote($nombre, $inicio, $numero_filas)
+    function ListarLote($nombre, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "SELECT l.nro,p.nombre,l.cantidad,DATE_FORMAT(l.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento,a.nombre as almacen,s.nombre as sucursal,lcu.descripcion as unidad from log_lote l
          inner join log_producto p on l.id_producto=p.id inner join log_almacen a on a.id=l.id_almacen inner join cont_sucursal s on s.id=a.id_sucursal inner join log_codigo_unidad_medida lcu on lcu.id=p.unidad  "
-            . "where l.nro like '%$nombre%' or p.nombre like '%$nombre%' or l.fecha_vencimiento like '%$nombre%' order by p.id desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY  ";
+            . "where l.nro like '%$nombre%' or p.nombre like '%$nombre%' or l.fecha_vencimiento like '%$nombre%' order by p.id desc limit $inicio,$fin  ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -922,13 +919,13 @@ class Logistica
 
 
     // FUNCIONES PARA EL MANTENEDOR ORDEN DOCUMENTO
-    function ListarOrdDoc($nombre, $inicio, $numero_filas)
+    function ListarOrdDoc($nombre, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "SELECT p.nombre,oc.numero,l.cant_orden,c.tipo_documento,concat(td.descripcion, ' - ',c.nro_documento)nro_documento,l.cant_compra from log_orden_documento l 
       inner join log_producto p on l.id_producto=p.id inner join log_orden_compra oc on l.id_orden_compra=oc.id
        inner join log_compra c on l.id_compra=c.id inner join log_tipo_documento td on  td.id=c.tipo_documento
-       where  p.nombre like '%$nombre%' or c.nro_documento like '%$nombre%' or oc.numero like '%$nombre%' order by l.id desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY  ";
+       where  p.nombre like '%$nombre%' or c.nro_documento like '%$nombre%' or oc.numero like '%$nombre%' order by l.id desc limit $inicio,$fin  ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -947,17 +944,22 @@ class Logistica
 
     //FUNCIONES PARA KARDEX
 
-    function ListarKardex($id_producto, $inicio, $numero_filas)
+    function ListarKardex($id_producto, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IIF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
-        IIF(k.tipo_movimiento=1,cast(precio as decimal(18,2)),'0.00') as precio_entrada, IIF(k.tipo_movimiento=1,cast(costo_total as decimal(18,2)),'0.00') as costo_total_entrada, 
-        IIF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
-        IIF(k.tipo_movimiento=2,cast(costo_total as decimal(18,2)),'0.00') as costo_total_salida ,k.tipo_movimiento,k.cantidad,k.costo_total
-       
-       FROM log_kardex k
-       
-       where k.id_producto=$id_producto order by k.fecha asc ,k.id asc   OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
+        IF(k.tipo_movimiento=1,precio,'') as precio_entrada, IF(k.tipo_movimiento=1,costo_total,'') as costo_total_entrada, 
+        IF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IF(k.tipo_movimiento=2,precio,'') as precio_salida, 
+        IF(k.tipo_movimiento=2,costo_total,'') as costo_total_salida ,
+        IF(k.tipo_movimiento=1, @cantidad_final := @cantidad_final + k.cantidad ,@cantidad_final := @cantidad_final - k.cantidad )as cantidad_final,
+        IF(@cantidad_final=0,CAST(0 as DECIMAL(18,2)),CAST( (IF(k.tipo_movimiento=1, CAST(@costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST( @costo_total_final - k.costo_total as DECIMAL(18,2)) )) /@cantidad_final as DECIMAL(18,2))),
+        IF(k.tipo_movimiento=1, CAST(@costo_total_final := @costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST(@costo_total_final := @costo_total_final - k.costo_total as DECIMAL(18,2)) )as costo_total_final,
+        k.tipo_movimiento,k.cantidad,k.costo_total
+
+       FROM `log_kardex` k
+       JOIN (select @cantidad_final := 0) s
+       JOIN (select @costo_total_final := 0) c
+       where k.id_producto=$id_producto order by k.fecha asc   limit $inicio,$fin ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -971,18 +973,23 @@ class Logistica
         return $ejecutar;
     }
 
-    function ListarKardexAlmacen($id_producto,$id_almacen, $inicio, $numero_filas)
+    function ListarKardexAlmacen($id_producto,$id_almacen, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IIF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
-        IIF(k.tipo_movimiento=1,cast(precio as decimal(18,2)),'0.00') as precio_entrada, IIF(k.tipo_movimiento=1,cast(costo_total as decimal(18,2)),'0.00') as costo_total_entrada, 
-        IIF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
-        IIF(k.tipo_movimiento=2,cast(costo_total as decimal(18,2)),'0.00') as costo_total_salida ,k.tipo_movimiento,k.cantidad,k.costo_total
+        $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
+        IF(k.tipo_movimiento=1,precio,'') as precio_entrada, IF(k.tipo_movimiento=1,costo_total,'') as costo_total_entrada, 
+        IF(k.tipo_movimiento=2,k.cantidad,'') as cantidad_salida,IF(k.tipo_movimiento=2,precio,'') as precio_salida, 
+        IF(k.tipo_movimiento=2,costo_total,'') as costo_total_salida ,
+        IF(k.tipo_movimiento=1, @cantidad_final := @cantidad_final + k.cantidad ,@cantidad_final := @cantidad_final - k.cantidad )as cantidad_final,
+        IF(@cantidad_final=0,CAST(0 as DECIMAL(18,2)),CAST( (if(k.tipo_movimiento=1, CAST(@costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST( @costo_total_final - k.costo_total as DECIMAL(18,2)) )) /@cantidad_final as DECIMAL(18,2))),
+        IF(k.tipo_movimiento=1, CAST(@costo_total_final := @costo_total_final + k.costo_total as DECIMAL(18,2) ) ,CAST(@costo_total_final := @costo_total_final - k.costo_total as DECIMAL(18,2)) )as costo_total_final
+        ,k.tipo_movimiento,k.cantidad,k.costo_total
 
-       FROM log_kardex k
-      
+       FROM `log_kardex` k
+       JOIN (select @cantidad_final := 0) s
+       JOIN (select @costo_total_final := 0) c
        JOIN log_lote l ON l.id=k.id_lote 
-       where k.id_producto=$id_producto and l.id_almacen=$id_almacen  order by k.fecha asc,k.id asc    OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+       where k.id_producto=$id_producto and l.id_almacen=$id_almacen  order by k.fecha asc   limit $inicio,$fin ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1227,10 +1234,10 @@ class Logistica
     }
 
 
-    function ListarMaquinas($nombre, $inicio, $numero_filas)
+    function ListarMaquinas($nombre, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "SELECT * from log_maquina where nombre like '%$nombre%' and estado='0'  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+        $sql = "SELECT * from log_maquina where nombre like '%$nombre%' and estado='0' limit $inicio,$fin ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1470,14 +1477,14 @@ class Logistica
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
-    function ListarCalibraciones($fecha, $inicio, $numero_filas)
+    function ListarCalibraciones($fecha, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "SELECT c.id,c.fecha,p.nombre as nombre_reactivo,c.cantidad,m.nombre as nombre_maquina,p.id as id_reactivo,m.id as id_maquina from calibracion c  
          inner join log_producto p on c.id_reactivo=p.id
          inner join log_maquina m on m.id=c.id_maquina  where c.fecha like '%$fecha%' and c.estado='0' order by c.fecha desc
 
-          OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+         limit $inicio,$fin ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1509,10 +1516,10 @@ class Logistica
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
-    function ListarExamenes($nombre, $inicio, $numero_filas)
+    function ListarExamenes($nombre, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = "SELECT id,nombre from examen where nombre like '%$nombre%' and estado='0' order by nombre asc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY; ";
+        $sql = "SELECT id,nombre from examen where nombre like '%$nombre%' and estado='0' order by nombre asc limit $inicio,$fin; ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1705,11 +1712,11 @@ class Logistica
     }
 
 
-    function ListarClienteExamen($fecha, $inicio, $numero_filas)
+    function ListarClienteExamen($fecha, $inicio, $fin)
     {
         $ocado = new cado();
         $sql = "SELECT ce.id,ce.fecha,c.nombre,e.nombre,c.id,e.id from cliente_examen ce inner join cliente c on c.id=ce.id_cliente
-        inner join examen e on e.id=ce.id_examen where ce.fecha like '%$fecha%'  and ce.estado='0'  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
+        inner join examen e on e.id=ce.id_examen where ce.fecha like '%$fecha%'  and ce.estado='0' limit $inicio,$fin ;";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1783,10 +1790,10 @@ class Logistica
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
-    function ListarIngresosxReactivo($id, $inicio, $numero_filas)
+    function ListarIngresosxReactivo($id, $inicio, $fin)
     {
         $ocado = new cado();
-        $sql = " SELECT c.fecha,sum(cd.cantidad) from log_compra_detalle cd inner join log_compra c on c.id=cd.id_compra where cd.id_producto=$id GROUP BY c.fecha ORDER BY c.fecha DESC  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY";
+        $sql = " SELECT c.fecha,sum(cd.cantidad) from log_compra_detalle cd inner join log_compra c on c.id=cd.id_compra where cd.id_producto=$id GROUP BY c.fecha ORDER BY c.fecha DESC limit $inicio,$fin";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }

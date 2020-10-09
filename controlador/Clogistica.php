@@ -1033,7 +1033,7 @@ switch ($_GET["op"]) {
 
         break;
 
-    case 'LIS_KARDEX':
+        /* case 'LIS_KARDEX':
         $datos = array();
         $pagina = $_GET["pagina"];
         $ultimo_pagina = $pagina * $paginacion;
@@ -1065,6 +1065,59 @@ switch ($_GET["op"]) {
 
         echo json_encode($datos);
         break;
+*/
+    case 'LIS_KARDEX':
+        $datos = array();
+        $pagina = $_GET["pagina"];
+        $ultimo_pagina = $pagina * $paginacion;
+        $primero_pagina = $ultimo_pagina - $paginacion;
+        $lista = $olog->ListarKardex($_GET["producto"], $primero_pagina, $paginacion);
+        $cont = $primero_pagina;
+
+        $cantidad_final = 0;
+        $costo_total_final = 0;
+        foreach ($lista as $kardex) {
+            $cont++;
+            $subArray = array();
+            $subArray[] = $kardex[0];
+            $subArray[] = $kardex[1];
+            $subArray[] = $kardex[2];
+            $subArray[] = $kardex[3];
+            $subArray[] = $kardex[4];
+            $subArray[] = $kardex[5];
+            $subArray[] = $kardex[6];
+            $subArray[] = $kardex[7];
+            $subArray[] = $kardex[8];
+            $subArray[] = $kardex[9];
+            if ($kardex['tipo_movimiento'] == 1) {
+                $cantidad_final = $cantidad_final + $kardex['cantidad'];
+                $costo_total_final = $costo_total_final + $kardex['costo_total'];
+                $subArray[] = $cantidad_final;
+                if ($cantidad_final == 0) {
+                    $subArray[] = 0.00;
+                } else {
+                    $subArray[] = $costo_total_final / $cantidad_final;
+                }
+                $subArray[] =  $costo_total_final;
+            } else {
+                $cantidad_final = $cantidad_final - $kardex['cantidad'];
+                $costo_total_final = $costo_total_final - $kardex['costo_total'];
+                $subArray[] = $cantidad_final;
+                if ($cantidad_final == 0) {
+                    $subArray[] = 0.00;
+                } else {
+                    $subArray[] = $costo_total_final / $cantidad_final;
+                }
+                $subArray[] =  $costo_total_final;
+            }
+
+
+            $datos[] = $subArray;
+        }
+
+        echo json_encode($datos);
+        break;
+
 
     case "PAG_KARDEX":
 
@@ -1090,6 +1143,9 @@ switch ($_GET["op"]) {
         $primero_pagina = $ultimo_pagina - $paginacion;
         $lista = $olog->ListarKardexAlmacen($_GET["producto"], $_GET["almacen"], $primero_pagina, $paginacion);
         $cont = $primero_pagina;
+
+        $cantidad_final = 0;
+        $costo_total_final = 0;
         foreach ($lista as $kardex) {
             $cont++;
             $subArray = array();
@@ -1103,10 +1159,29 @@ switch ($_GET["op"]) {
             $subArray[] = $kardex[7];
             $subArray[] = $kardex[8];
             $subArray[] = $kardex[9];
-            $subArray[] = $kardex[10];
-            $subArray[] = $kardex[11];
-            $subArray[] = $kardex[12];
-        
+     
+            if ($kardex['tipo_movimiento'] == 1) {
+                $cantidad_final = $cantidad_final + $kardex['cantidad'];
+                $costo_total_final = $costo_total_final + $kardex['costo_total'];
+                $subArray[] = $cantidad_final;
+                if ($cantidad_final == 0) {
+                    $subArray[] = 0.00;
+                } else {
+                    $subArray[] = $costo_total_final / $cantidad_final;
+                }
+                $subArray[] =  $costo_total_final;
+            } else {
+                $cantidad_final = $cantidad_final - $kardex['cantidad'];
+                $costo_total_final = $costo_total_final - $kardex['costo_total'];
+                $subArray[] = $cantidad_final;
+                if ($cantidad_final == 0) {
+                    $subArray[] = 0.00;
+                } else {
+                    $subArray[] = $costo_total_final / $cantidad_final;
+                }
+                $subArray[] =  $costo_total_final;
+            }
+
 
 
 
