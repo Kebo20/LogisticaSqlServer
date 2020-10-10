@@ -1,6 +1,6 @@
 <div class="page-header" style="background-color:#EFF3F8; margin:0">
     <h1><i class="menu-icon"><img src="imagenes/grupo_user.png" style="border:0;" height="25" width="25"></i>
-        <span id="Titulo" style="font-size:13px; font-weight:bold">PRODUCTOS</span>
+        <span id="Titulo" style="font-size:13px; font-weight:bold">REPORTE DE REACTIVOS</span>
 
     </h1>
 

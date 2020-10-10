@@ -772,7 +772,7 @@ class Logistica
     function ListarCompra($q, $inicio, $numero_filas)
     {
         $ocado = new cado();
-        $sql = "select c.fecha,u.user,prov.nombre,c.tipo_documento,ta.descripcion,c.monto_sin_igv,c.igv,c.monto_igv,"
+        $sql = "select c.fecha,u.usuario,prov.nombre,c.tipo_documento,ta.descripcion,CAST(c.monto_sin_igv as decimal(18,2)),CAST(c.igv as decimal(18,2)),CAST(c.monto_igv as decimal(18,2)),"
             . "c.total ,c.id,c.nota_credito,c.fecha_sistema,c.tipo_compra,c.nro_documento,c.nro_dias from log_compra c inner join conf_usuario u on c.id_usuario=u.id inner join"
             . " admin_tipo_afectacion_igv ta on ta.id=c.tipo_afectacion inner join log_proveedor prov on prov.id=c.id_proveedor where c.nro_documento like '%$q%' order by c.fecha desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
         $ejecutar = $ocado->ejecutar($sql);
@@ -939,7 +939,7 @@ class Logistica
 
         $sql = "SELECT count(*) from log_orden_documento l inner join log_producto p on l.id_producto=p.id 
       inner join log_orden_compra oc on l.id_orden_compra=oc.id inner join log_compra c on l.id_compra=c.id "
-            . "where  p.nombre like '%$nombre%' or c.nro_documento like '%$nombre%' or oc.numero like '%$nombre%' order by l.id desc  ";
+            . "where  p.nombre like '%$nombre%' or c.nro_documento like '%$nombre%' or oc.numero like '%$nombre%'  ";
 
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
@@ -1230,7 +1230,7 @@ class Logistica
     function ListarMaquinas($nombre, $inicio, $numero_filas)
     {
         $ocado = new cado();
-        $sql = "SELECT * from log_maquina where nombre like '%$nombre%' and estado='0'  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+        $sql = "SELECT * from log_maquina where nombre like '%$nombre%' and estado='0'  order by nombre desc OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1473,7 +1473,8 @@ class Logistica
     function ListarCalibraciones($fecha, $inicio, $numero_filas)
     {
         $ocado = new cado();
-        $sql = "SELECT c.id,c.fecha,p.nombre as nombre_reactivo,c.cantidad,m.nombre as nombre_maquina,p.id as id_reactivo,m.id as id_maquina from calibracion c  
+        $sql = "SELECT c.id,c.fecha,p.nombre as nombre_reactivo,c.cantidad,m.nombre as nombre_maquina,p.id as id_reactivo,m.id as id_maquina 
+          from calibracion c  
          inner join log_producto p on c.id_reactivo=p.id
          inner join log_maquina m on m.id=c.id_maquina  where c.fecha like '%$fecha%' and c.estado='0' order by c.fecha desc
 
@@ -1487,7 +1488,7 @@ class Logistica
         $ocado = new cado();
         $sql = "SELECT count(*) from calibracion c  
          inner join log_producto p on c.id_reactivo=p.id
-         inner join log_maquina m on m.id=c.id_maquina  where c.fecha like '%$fecha%' order by c.fecha desc";
+         inner join log_maquina m on m.id=c.id_maquina  where c.fecha like '%$fecha%' ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
@@ -1496,7 +1497,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "SELECT c.fecha,m.nombre as nombre_maquina,c.cantidad from calibracion c  inner join log_producto r on r.id=c.id_reactivo
-         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
+         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1505,7 +1506,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "SELECT sum(c.cantidad) from calibracion c  inner join log_producto r on r.id=c.id_reactivo
-         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between  DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
+         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1709,7 +1710,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "SELECT ce.id,ce.fecha,c.nombre,e.nombre,c.id,e.id from cliente_examen ce inner join cliente c on c.id=ce.id_cliente
-        inner join examen e on e.id=ce.id_examen where ce.fecha like '%$fecha%'  and ce.estado='0'  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
+        inner join examen e on e.id=ce.id_examen where ce.fecha like '%$fecha%'  and ce.estado='0' order by ce.fecha  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1757,7 +1758,7 @@ class Logistica
         $sql = "SELECT sum(er.cantidad) FROM cliente_examen ce 
         inner join examen_reactivo er on ce.id_examen=er.id_examen 
         inner join examen e on e.id=ce.id_examen 
-        where ce.fecha BETWEEN DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and '$fecha2' and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
+        where ce.fecha BETWEEN '$fecha1' and '$fecha2' and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1771,7 +1772,7 @@ class Logistica
     function FechaAnteriorIngresoReactivo($fecha, $id_reactivo)
     {
         $ocado = new cado();
-        $sql = "SELECT c.fecha from log_compra_detalle cd inner join log_compra c where c.fecha<'$fecha' and cd.id_producto=$id_reactivo  GROUP BY c.fecha ORDER BY c.fecha DESC limit 1";
+        $sql = "SELECT top 1 c.fecha from log_compra_detalle cd inner join log_compra c on c.id=cd.id_compra where c.fecha<'$fecha' and cd.id_producto=$id_reactivo  GROUP BY c.fecha ORDER BY c.fecha DESC ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1779,7 +1780,7 @@ class Logistica
     function FechaPosteriorIngresoReactivo($fecha, $id_reactivo)
     {
         $ocado = new cado();
-        $sql = "SELECT c.fecha from log_compra_detalle cd inner join log_compra c where c.fecha>'$fecha' and cd.id_producto=$id_reactivo  GROUP BY c.fecha ORDER BY c.fecha ASC limit 1";
+        $sql = "SELECT top 1 c.fecha from log_compra_detalle cd inner join log_compra c on c.id=cd.id_compra where c.fecha>'$fecha' and cd.id_producto=$id_reactivo  GROUP BY c.fecha ORDER BY c.fecha ASC ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1794,7 +1795,7 @@ class Logistica
     function TotalIngresosxReactivo($id)
     {
         $ocado = new cado();
-        $sql = "SELECT count(*) from log_compra_detalle cd inner join log_compra c where cd.id_producto=$id GROUP BY c.fecha ;  ";
+        $sql = "SELECT count(*) from log_compra_detalle cd inner join log_compra c on c.id=cd.id_compra where cd.id_producto=$id GROUP BY c.fecha ;  ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
