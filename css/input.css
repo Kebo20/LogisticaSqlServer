@@ -43,7 +43,31 @@
   box-shadow: none  !important ;
   outline: none  !important ;
 }
+ input:focus,span:focus,.select2-search__field,select:focus{
+  border: 0.2px solid #bcbeb4 !important ;
+  box-shadow: none  !important ;
+  outline: none  !important ;
+ }
 
+ 
+ .accesos:hover{
+  border-color: #bcbeb4 !important;
+  color:rgb(190, 45, 45) !important;
+  background-color: rgb(190, 45, 45) !important;
+}
+
+.btn-pri {
+  background-color: #ED3237 !important;
+  border-color: #ED3237 !important;
+  box-shadow: none  !important ;
+  outline: none  !important ;
+
+
+}
+
+.btn-pri:hover, .btn-pri:active,.btn-pri:focus{
+  background-color: #e94449 !important;
+}
 
 .tabla-scroll{
     overflow-y: scroll;

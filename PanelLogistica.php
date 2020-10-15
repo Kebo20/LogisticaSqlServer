@@ -63,16 +63,16 @@ date_default_timezone_set('America/Lima');
 
 <body class="no-skin">
 
-	<div id="navbar" class="navbar navbar-default   navbar-collapse       h-navbar ace-save-state">
+	<div id="navbar" class="navbar navbar-default   navbar-collapse       h-navbar ace-save-state" style="background-color: #e94449;">
 		<div class="navbar-container ace-save-state" id="navbar-container">
-			<div class="navbar-header pull-left"> <br>
+			<div class="navbar-header pull-left" style="background-color: #e94449;"> <br>
 				<b style="color:#FFF">Bienvenido : <span id="LblIdUser"></span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<b style="color:#FFF"><span id="LblIdCaja"></span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<b style="color:#FFF">Fecha : <?= date('d/m/Y') ?></b>
 				<a href="Panel.php" class="navbar-brand">
 					<!--<img src="imagenes/logo.png" height="20" width="150">-->
 				</a>
-				<button class="pull-right navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#sidebar">
+				<button class="pull-right navbar-toggle collapsed" style="background-color: #FFF;" type="button" data-toggle="collapse" data-target="#sidebar">
 					<span class="sr-only">Toggle sidebar</span>
 
 					<span class="icon-bar"></span>
@@ -84,11 +84,11 @@ date_default_timezone_set('America/Lima');
 
 			</div>
 
-			<div class="navbar-buttons navbar-header pull-right  collapse navbar-collapse" role="navigation">
+			<div class="navbar-buttons navbar-header pull-right  collapse navbar-collapse" role="navigation" >
 				<ul class="nav ace-nav">
 					<!-- Apartado icono -->
 					<li class="purple dropdown-modal">
-						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<a data-toggle="dropdown" class="dropdown-toggle" href="#" style="background-color: #d9dee0;">
 							<i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
 							<span class="badge badge-important" id='CantMensajes'></span>
 						</a>
@@ -112,8 +112,8 @@ date_default_timezone_set('America/Lima');
 						</ul>
 					</li>
 					<!-- Fin Apartado icono-->
-					<li class="light-blue dropdown-modal user-min">
-						<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+					<li class="light-blue dropdown-modal user-min" >
+						<a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: #d9dee0;">
 							<img class="nav-user-photo" src="assets/images/avatars/user.jpg" alt="Usuario" />
 							<span class="user-info">
 								<small>Bienvenido,</small>
@@ -161,28 +161,43 @@ date_default_timezone_set('America/Lima');
 			} catch (e) {}
 		</script>
 
-		<div id="sidebar" class="sidebar      h-sidebar                navbar-collapse collapse          ace-save-state">
+		<div id="sidebar" class="sidebar  h-sidebar  navbar-collapse collapse  ace-save-state">
 			<script type="text/javascript">
 				try {
 					ace.settings.loadState('sidebar')
 				} catch (e) {}
 			</script>
 
-			<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+			<div class="sidebar-shortcuts" id="sidebar-shortcuts" style="width: 180px;">
 
 				<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-					<span class="btn btn-success" onClick="DashboardModal()"></span>
-
-					<span class="btn btn-info" onClick="DashboardModalAnual()"></span>
-
-					<span class="btn btn-warning"></span>
-
-					<span class="btn btn-danger"></span>
+					<img src="imagenes/logo-medical.png" alt="logo" height="40px">
 				</div>
 			</div><!-- /.sidebar-shortcuts -->
 
 
-			<ul class="nav nav-list" id="IdMenu" style="margin:0; padding:0">
+			<ul class="nav nav-list" id="IdMenu" style="margin:0; padding:0;border-color: #ED3237;">
+				<li class="hover" id="2" onClick="Activar('2');AbrirCaja();">
+
+					<a href="#" class="dropdown-toggle">
+						<i class="menu-icon"><img src="imagenes/abrir_caja.png" style="border:0" height="25" width="25"></i>
+						<span class="menu-text" style="font-size:10px; font-weight:bold"> ABRIR CAJA </span>
+					</a>
+				</li>
+				<li class="hover" id="3" onClick="Activar('3');CerrarCaja();">
+
+					<a href="#" class="dropdown-toggle">
+						<i class="menu-icon"><img src="imagenes/cerrar_caja.png" style="border:0" height="25" width="25"></i>
+						<span class="menu-text" style="font-size:10px; font-weight:bold"> CERRAR CAJA </span>
+					</a>
+				</li>
+				<li class="hover" id="4" onClick="Activar('4');Egresos();">
+
+					<a href="#" class="dropdown-toggle">
+						<i class="menu-icon"><img src="imagenes/egresos.png" style="border:0" height="25" width="25"></i>
+						<span class="menu-text" style="font-size:10px; font-weight:bold">EGRESOS</span>
+					</a>
+				</li>
 				<li class="hover" id="1" onClick="Activar('1');">
 
 					<a href="#" class="dropdown-toggle">
@@ -301,22 +316,33 @@ date_default_timezone_set('America/Lima');
 					</a>
 					<b class="arrow"></b>
 				</li>
-				<li class="hover" id="15" onClick="Activar('15');RealizarCompra();">
-					<a href="#">
-						<i class="menu-icon" style="margin:0; padding:0">
-							<img src="imagenes/realizar_compra.png" style="border:0" height="30" width="30"></i>
-						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">REALIZAR COMPRA</span>
-					</a>
-					<b class="arrow"></b>
-				</li>
-				<li class="hover" id="16" onClick="Activar('16');Compras();">
+				<li class="hover" id="15" onClick="Activar('15');">
 					<a href="#">
 						<i class="menu-icon" style="margin:0; padding:0">
 							<img src="imagenes/compras.png" style="border:0" height="30" width="30"></i>
-						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">COMPRAS </span>
+						<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">COMPRAS</span>
 					</a>
 					<b class="arrow"></b>
+					<ul class="submenu">
+						<li class="hover" id="" onClick="Activar('15');RealizarCompra();">
+							<a href="#">
+								<i class="menu-icon fa fa-caret-right" style="margin:0; padding:0"></i>
+								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">REALIZAR</span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+						<li class="hover" id="" onClick="Activar('15');Compras();">
+							<a href="#">
+								<i class="menu-icon fa fa-caret-right" style="margin:0; padding:0"></i>
+								<span class="menu-text" style="font-size:10px; margin:0; padding:0; font-weight:bold">LISTAR</span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+					</ul>
 				</li>
+
 				<li class="hover" id="17" onClick="Activar('17');OrdenDocumento();">
 					<a href="#">
 						<i class="menu-icon" style="margin:0; padding:0">

@@ -5,7 +5,7 @@ $tipo=$_POST['tipo'];
 date_default_timezone_set('America/Lima');
  ?>
   
-<table id="IdTblEgresos" border="1" bordercolor="#cccccc" >
+<table id="IdTblEgresos" class="table table-responsive table-bordered table-striped text-left" style="margin:0" border="1" bordercolor="#cccccc" >
 	<thead>
 	   <tr style="font-size:14px">
 		  <Th>Nro Egreso</Th>

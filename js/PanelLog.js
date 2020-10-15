@@ -36,6 +36,10 @@ function Activar($id) {
     $("#" + $id).addClass("active")
     $("#IdActivo").val($id)
 }
+function AbrirCaja() { $.post('Adm_AbrirCaja.php', {}, function (datitos) { $("#IdCuerpo").html(datitos) }) }
+function CerrarCaja() { $.post('Adm_CerrarCaja.php', {}, function (datitos) { $("#IdCuerpo").html(datitos) }) }
+function Egresos() { $.post('Adm_Egresos.php', {}, function (datitos) { $("#IdCuerpo").html(datitos) }) }
+
 function Productos() { $.post('log_producto.php', {}, function (datitos) { $("#IdCuerpo").html(datitos) }) }
 function CategoriasProducto() { $.post('log_categoria_producto.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }
 function Proveedores() { $.post('log_proveedor.php', {}, function (datitos) { $("#IdCuerpo").html(datitos); }) }

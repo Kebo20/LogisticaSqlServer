@@ -46,7 +46,7 @@
                     <input type="text" id="buscar" placeholder=" Buscar " class="form-control" onkeyup="javascript:Listar(1)" autocomplete="off" />
                     <i class="ace-icon fa fa-search nav-search-icon"></i>
                 </span></td>
-            <td width="50%"> <button type="button" class="btn btn-primary" onclick="javascript:abrirModal()">Nuevo </button>
+            <td width="50%"> <button type="button" class="btn " onclick="javascript:abrirModal()">Nuevo </button>
             </td>
         </tr>
     </table>

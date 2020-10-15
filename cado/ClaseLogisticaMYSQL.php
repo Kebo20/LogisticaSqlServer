@@ -794,14 +794,14 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "select p.nombre,c.*,l.nro,c.nro_orden from log_compra_detalle c inner join log_producto p on c.id_producto=p.id 
-         inner join log_lote l on l.id=c.id_lote where id_compra=$compra";
+         inner join log_lote l on l.id=c.id_lote where id_compra=$compra order by c.id desc";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }
     function UltimaPrecioCompra($id)
     {
         $ocado = new cado();
-        $sql = "SELECT * from  log_compra_detalle where id_producto=$id order by id desc limit 1";
+        $sql = "SELECT precio_sin_igv from  log_compra_detalle where id_producto=$id order by id desc limit 1";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
     }

@@ -1,6 +1,6 @@
 <?php   require_once('../cado/ClaseAdmision.php'); 
 	    date_default_timezone_set('America/Lima');
-	    session_start();
+	   // session_start();
 	
 	
 

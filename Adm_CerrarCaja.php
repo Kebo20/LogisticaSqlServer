@@ -1,6 +1,7 @@
 <?php require_once('cado/ClaseAdmision.php');
 $oadmision=new Admision();
-date_default_timezone_set('America/Lima');$user=$_POST['user'];
+date_default_timezone_set('America/Lima');$user=1;
+//$user=$_POST['user'];
 $cod_ingreso=$_POST['cod_ingreso'];
 $listar=$oadmision->ListarCajaFondo($cod_ingreso);
 $col=$listar->fetch();
@@ -23,7 +24,7 @@ $total=$fondo_inicial+$efectivo+$tarjeta-$egreso;
       <div class="modal-content">
       <div class="modal-header">
         <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
-      <h4 class="modal-title" style="color:#2679B5;">  <img src="img/candado.png" height="30" width="30"  /> 
+      <h4 class="modal-title" style="color:#2679B5;">  <img src="imagenes/candado.png" height="30" width="30"  /> 
        <b> &nbsp;CIERRE DE CAJA </b> </h4>
         
       </div>

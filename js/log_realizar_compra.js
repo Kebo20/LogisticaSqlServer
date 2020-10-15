@@ -53,20 +53,36 @@ $(document).ready(function () {
     $("#monto_sin_igv").val("0.00");
     $("#total").val("0.00");
     $("#igv").val("0.00");
+    var IGV;
+    ObtenerIGV()
+    $('#inafecto').prop("checked",true)
 });
+
+function ObtenerIGV() {
+    $.post("controlador/Clogistica.php?op=IGV", {
+
+    }, function (data) {
+        IGV = data;
+
+    });
+}
+
 
 
 //COMPRA
 
 function llenarIGV() {
     if ($('input:radio[name=tipo_afectacion]:checked').val() == "1") {
-        $("#igv").val("0.18");
+        $("#igv").val(IGV * 100);
+        $("#igv_detalle").prop("disabled", false);
 
-        $('input:radio[name=tipo_afectacion]:checked').val()
     };
     if ($('input:radio[name=tipo_afectacion]:checked').val() == "2") {
         $("#igv").val("0.00");
+        $("#igv_detalle").prop("checked", false);
+        $("#igv_detalle").prop("disabled", true);
     };
+
     listar()
 
 }
@@ -80,14 +96,16 @@ function guardar() {
     }
 
 
-    if ($("#fecha").val() == "") {
-        swal("Campo requerido", "Inserte fecha", "warning");
-        $("#fecha").focus();
-        return false;
-    }
+  
     if ($("#d_cmb_prov").val() == "") {
         swal("Campo requerido", "Seleccione un proveedor", "warning");
         $("#d_cmb_prov").focus();
+        return false;
+    }
+
+    if ($("#d_cmb_alm").val() == "") {
+        swal("Campo requerido", "Seleccione un almacen", "warning");
+        $("#d_cmb_alm").focus();
         return false;
     }
     if ($("#tipo_documento").val() == "") {
@@ -100,6 +118,13 @@ function guardar() {
         $("#nro_documento").focus();
         return false;
     }
+
+    if ($("#fecha").val() == "") {
+        swal("Campo requerido", "Inserte fecha", "warning");
+        $("#fecha").focus();
+        return false;
+    }
+ 
 
 
 
@@ -176,7 +201,11 @@ function guardar() {
     }
 
     $("#btn_guardar").attr("disabled", true);
-
+    if ($("#igv_detalle").prop("checked")) {
+        igv_detalle = 1
+    } else {
+        igv_detalle = 0
+    }
 
     $.post("controlador/Clogistica.php?op=NUEVO_COM", {
 
@@ -191,11 +220,10 @@ function guardar() {
         tipo_compra: $("#tipo_compra").val(),
         nro_dias: $("#nro_dias").val(),
         id_orden: $("#orden").val(),
-        monto_igv: $("#monto_igv_total").val(),
-        igv: $("#igv").val(),
-        monto_sin_igv: $("#monto_sin_igv").val(),
-        total: $("#total").val(),
-        id_almacen: $("#id_cmb_alm").val()
+
+        id_almacen: $("#id_cmb_alm").val(),
+        igv_detalle: igv_detalle
+
     }, function (data) {
         console.log(data);
         if (data.indexOf("OK") > -1) {
@@ -203,7 +231,7 @@ function guardar() {
         } else {
             swal("Error", "Compra no registrada ", "error");
         }
-        $("#btn_guardar").attr("disabled",false);
+        $("#btn_guardar").attr("disabled", false);
 
         cancelar();
 
@@ -223,23 +251,9 @@ function cancelar() {
     $("#total").val("0.00");
     $("#fecha").val("");
     $("#orden").val("");
+    $("#igv").val("");
     $("#fecha_vencimiento").val("");
-    //        $("#igv").val("");
-    /* setTimeout(function() {
-         $("#id_cmb_pro").val("").trigger('chosen:updated');
-     }, 200);
-     setTimeout(function() {
-         $("#id_cmb_prov").val("").trigger('chosen:updated');
-     }, 200);
-     setTimeout(function() {
-         $("#tipo_documento").val("").trigger('chosen:updated');
-     }, 200);
-     setTimeout(function() {
-         $("#tipo_compra").val("").trigger('chosen:updated');
-     }, 200);
-     setTimeout(function() {
-         $("#bonificacion").val("").trigger('chosen:updated');
-     }, 200);*/
+
     listar();
 }
 
@@ -272,15 +286,14 @@ function listar() {
         //Calculo del IGV
         //.toFixed(2) RECORTA A DOS DECIMALES SIN REDONDEAR INCLUIDO ENTEROS .00
         if ($("#igv_detalle").prop("checked")) {
-            compra[i].precio_sin_igv = (Math.round((compra[i].precio * (100 / 118)) * 100) / 100).toFixed(2);
-            compra[i].monto_igv = (Math.round(compra[i].precio * (18 / 118) * 100) / 100).toFixed(2);
-            //compra[i].subtotal = (Math.round((compra[i].precio_sin_igv * compra[i].cantidad) * 100) / 100).toFixed(2);
-            compra[i].subtotal = (Math.round((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * 100) / 100).toFixed(2);;
+            compra[i].monto_igv = (compra[i].precio * IGV / (1 + IGV)).toFixed(2);
+            compra[i].precio_sin_igv = (compra[i].precio - compra[i].monto_igv).toFixed(2);
+            compra[i].subtotal = ((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * compra[i].cantidad).toFixed(2);;
         } else {
-            compra[i].precio_sin_igv = (Math.round(compra[i].precio * 100) / 100).toFixed(2);
-            compra[i].monto_igv = (Math.round(compra[i].precio * (0.18) * 100) / 100).toFixed(2);
-            //compra[i].subtotal = (Math.round((parseFloat(compra[i].precio_sin_igv * compra[i].cantidad)) * 100) / 100).toFixed(2);
-            compra[i].subtotal = (Math.round((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * 100) / 100).toFixed(2);;
+
+            compra[i].precio_sin_igv = (compra[i].precio * 1).toFixed(2);
+            compra[i].monto_igv = (compra[i].precio * IGV).toFixed(2);
+            compra[i].subtotal = ((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * compra[i].cantidad).toFixed(2);;
         }
 
         if (compra[i].bonificacion == '0') {
@@ -310,28 +323,29 @@ function listar() {
             <td width='8%' align='right'>S/. " + compra[i].monto_igv + "</td>\n\
             <td width='8%' align='right'>S/. " + compra[i].subtotal + "</td>\n\
             <td width='3%'> " + bonificacion + "</td></tr>");
-        console.log(compra[i]);
     }
 
 
-    igv = $("#igv").val();
 
-    if (igv != 0) {
-        $("#monto_sin_igv").val(((Math.round((stotal) * 100) / 100) / 1.18).toFixed(2));
-        monto_sin_igv = $("#monto_sin_igv").val();
+    monto_sin_igv = stotal
+
+    if ($('input:radio[name=tipo_afectacion]:checked').val() == "1") {
+        $("#monto_sin_igv").val(monto_sin_igv.toFixed(2))
+        $("#inafecta").val("0.00")
+
+        monto_igv_total = monto_sin_igv * IGV
     } else {
-        $("#monto_sin_igv").val(((Math.round((stotal) * 100) / 100)).toFixed(2));
-        monto_sin_igv = $("#monto_sin_igv").val();
+        $("#inafecta").val(monto_sin_igv.toFixed(2))
+        $("#monto_sin_igv").val('0.00')
+
+        monto_igv_total = 0.00
+
     }
+    $("#monto_igv_total").val(monto_igv_total.toFixed(2));
 
 
-
-    $("#monto_igv_total").val((parseFloat(stotal - monto_sin_igv)).toFixed(2));
-    monto_igv_total = $("#monto_igv_total").val();
-
-
-    total = (Math.round((parseFloat(stotal) * 100) / 100).toFixed(2));
-    $("#total").val(total);
+    total = stotal + monto_igv_total
+    $("#total").val(total.toFixed(2));
 }
 
 
@@ -386,28 +400,20 @@ function ModificarDetalleCantidad($fila) {
     compra[$fila].cantidad = $("#" + $fila + "_cantidad").val()
     //console.log(compra[$fila].cantidad)
     //console.log(compra[$fila].cantidad_orden)
-
-
     //comprobacion del total de la orden
     cantidad_total = 0;
-
     for (var i = 0; i < compra.length; i++) {
         if (compra[i].id_producto == compra[$fila].id_producto && compra[$fila].orden == '1') {
             cantidad_total += parseInt(compra[i].cantidad)
         }
-
     }
 
     if (parseInt(cantidad_total) > parseInt(compra[$fila].cantidad_orden)) {
         compra[$fila].cantidad = 0;
         swal("Cantidad execede a la orden", "", "error")
-
     }
 
-
-
     listar()
-
 
 }
 
@@ -421,15 +427,12 @@ function Dividir(fila, cantidad_orden, id_producto, nombre_producto, tipo_produc
     $("#dividir-cantidad_orden").val(cantidad_orden)
     $("#dividir-fila").val(fila)
 
-
     dividir = new Array()
     DividirListar()
-
 
 }
 
 function AñadirDetalle() {
-
 
     if ($("#id_cmb_pro").val() == "") {
         swal("Campo requerido", "Seleccione un producto", "warning");
@@ -650,16 +653,15 @@ function DividirListar() {
         //Calculo del IGV
         //.toFixed(2) RECORTA A DOS DECIMALES SIN REDONDEAR INCLUIDO ENTEROS .00
         if ($("#igv_detalle").prop("checked")) {
-            dividir[i].precio_sin_igv = (Math.round((dividir[i].precio * (100 / 118)) * 100) / 100).toFixed(2);
-            dividir[i].monto_igv = (Math.round(dividir[i].precio * (18 / 118) * 100) / 100).toFixed(2);
-            //dividir[i].subtotal = (Math.round((dividir[i].precio_sin_igv * dividir[i].cantidad) * 100) / 100).toFixed(2);
-            dividir[i].subtotal = (Math.round((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * 100) / 100).toFixed(2);;
+            dividir[i].monto_igv = (dividir[i].precio * IGV / (1 + IGV)).toFixed(2);
+
+            dividir[i].precio_sin_igv = (dividir[i].precio - dividir[i].monto_igv).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * dividir[i].cantidad).toFixed(2);
 
         } else {
-            dividir[i].precio_sin_igv = (Math.round(dividir[i].precio * 100) / 100).toFixed(2);
-            dividir[i].monto_igv = (Math.round(dividir[i].precio * (0.18) * 100) / 100).toFixed(2);
-            //dividir[i].subtotal = (Math.round((parseFloat(dividir[i].precio_sin_igv * dividir[i].cantidad)) * 100) / 100).toFixed(2);
-            dividir[i].subtotal = (Math.round((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * 100) / 100).toFixed(2);;
+            dividir[i].precio_sin_igv = (dividir[i].precio).toFixed(2);
+            dividir[i].monto_igv = (dividir[i].precio * IGV).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * dividir[i].cantidad).toFixed(2);
 
         }
 
@@ -801,7 +803,7 @@ function SeleccionarAlmacenxOrden_Compra(id_orden) {
     $.post("controlador/Clogistica.php?op=ALMxORD_COMPRA", { id_orden: id_orden }, function (data) {
 
         $("#id_cmb_alm").val(data).change();
-        
+
 
     })
 }
@@ -815,13 +817,13 @@ function LlenarDatos() {
         swal("Debe seleccionar un Registro", "Obligatorio", "warning");
         return false;
     }
-    
+
     ListarAlmacenesGral()
-    
+
     $.post("controlador/Clogistica.php?op=LLENAR_ORD_COM_DET", {
         id: $id
     }, function (detalles) {
-        console.log(detalles)
+        //console.log(detalles)
 
         compra = new Array();
         $("#orden").val($id)
@@ -860,7 +862,7 @@ function LlenarDatos() {
 
         listar();
         $("#ECModalOrdenCompra").modal('hide');
-        console.log(compra);
+        //console.log(compra);
     }, 'JSON');
 
 
@@ -878,6 +880,8 @@ function ClickAfecto() {
 }
 
 function ClickInafecto() {
+
+
     setTimeout(function () {
         $("#id_cmb_prov").select2('open');
     }, 200);
@@ -892,7 +896,6 @@ function ChangeProv() {
 
 function ChangeSucursal() {
 
-    //$("#id_cmb_alm").val("").trigger('change');
     $("#id_cmb_alm").html("");
 
     $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
@@ -976,10 +979,10 @@ function ChangeProducto() {
 
         id: $("#id_cmb_pro").val()
     }, function (data) {
-        if (!data.precio_sin_igv) {
+        if (!data) {
             $("#precio_anterior").val("0.00");
         } else {
-            $("#precio_anterior").val(data.precio_sin_igv);
+            $("#precio_anterior").val(data);
         }
 
         console.log(data);

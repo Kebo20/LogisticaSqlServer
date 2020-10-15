@@ -1,4 +1,5 @@
-<?php date_default_timezone_set('America/Lima');$user=$_POST['user'];?>
+<?php date_default_timezone_set('America/Lima');$user=1
+//$user=$_POST['user'];?>
 <br />
 <div class="row">
  <div class="col-2"></div>
@@ -9,7 +10,7 @@
       <div class="modal-content">
       <div class="modal-header">
         <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
-      <h4 class="modal-title" style="color:#2679B5;">  <img src="img/candado.png" height="30" width="30"  /> 
+      <h4 class="modal-title" style="color:#2679B5;">  <img src="imagenes/candado.png" height="30" width="30"  /> 
        <b> &nbsp;CONFIGURACION DE INGRESO </b><span id="Titu"></span> </h4>
         
       </div>
@@ -75,7 +76,7 @@
 <script> 
   function LLenarCaja(){
 	  $.post('controlador/Cadmision.php',{accion:"LLENAR_CAJA"},function(data){
-		  $("#IdCa").html(data);
+		  $("#IdCa").html(data);console.log(data)
      })
    }
   

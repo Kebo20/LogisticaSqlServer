@@ -7,7 +7,13 @@ require_once('conexion.php');
 //OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY
 class Logistica
 {
+    public $IGV = 0.18;
 
+    function redondear_dos_decimal($valor)
+    {
+        $redondeado = round(($valor * 100)) / 100;
+        return $redondeado;
+    }
     // FUNCIONES PARA EL MANTENEDOR ALMACÉN	   
     function ListarAlmacen($q, $inicio, $numero_filas)
     {
@@ -655,16 +661,13 @@ class Logistica
         $proveedor,
         $tipo_documento,
         $tipo_afectacion,
-        $monto_sin_igv,
-        $igv,
-        $monto_igv,
-        $total,
         $nota_credito,
         $tipo_compra,
         $nro_documento,
         $nro_dias,
         $id_orden,
-        $id_almacen
+        $id_almacen,
+        $igv_detalle
     ) {
         $ocado = new cado();
         try {
@@ -680,10 +683,38 @@ class Logistica
                 $id_almacen = $this->ListarOrdenCompraxId($id_orden)->fetch()['id_almacen'];
             }
 
+            //CÁLCULO DEL DETALLE
+            $sub_total = 0;
+            foreach ($detalles_compra as $detalle) {
+
+                if ($igv_detalle == '1') { //FACT. AFECTA A IGV  
+                    $detalle['monto_igv'] = ($detalle['precio'] * $this->IGV) / (1 + $this->IGV);
+                    $detalle['precio_sin_igv'] = $detalle['precio'] - $detalle['monto_igv'];
+                } else {
+                    $detalle['monto_igv'] = $detalle['precio'] * $this->IGV;
+                    $detalle['precio_sin_igv'] = $detalle['precio'];
+                }
+                $detalle['subtotal']= (($detalle['precio_sin_igv'] + $detalle['monto_igv']) * $detalle['cantidad']);
+                $sub_total =  $sub_total +$detalle['subtotal'];
+            }
+            //CÁLCULO DEL TOTAL
+            $monto_sin_igv = $sub_total;
+            if ($tipo_afectacion == '1') {
+
+                $monto_igv = $this->IGV * $monto_sin_igv;
+                $igv=$this->IGV;
+            } else {
+                $monto_igv = 0;
+                $igv=0;
+            }
+
+            $total = $monto_sin_igv + $monto_igv;
+
+
             $sql = "insert into log_compra(fecha,id_usuario,id_proveedor,tipo_documento,tipo_afectacion,monto_sin_igv,igv,monto_igv,"
                 . "total,nota_credito,fecha_sistema,tipo_compra,nro_documento,nro_dias) values('$fecha','$usuario','$proveedor',"
                 . "'$tipo_documento','$tipo_afectacion',"
-                . "'$monto_sin_igv','$igv','$monto_igv','$total','$nota_credito','$date','$tipo_compra','$nro_documento','$nro_dias');";
+                . "'".$this->redondear_dos_decimal($monto_sin_igv)."','$igv','".$this->redondear_dos_decimal($monto_igv)."','".$this->redondear_dos_decimal($total)."','$nota_credito','$date','$tipo_compra','$nro_documento','$nro_dias');";
 
             foreach ($detalles_compra as $detalle) {
 
@@ -719,7 +750,7 @@ class Logistica
                     }
 
                     //precio anterior
-                    $precio_anterior = $this->UltimaPrecioCompra($id_producto)->fetch()['precio_sin_igv'];
+                    $precio_anterior = $this->UltimaPrecioCompra($id_producto);
                     if ($precio_anterior == '' || $precio_anterior == '0' || $precio_anterior == null) {
                         $precio_anterior = '0.00';
                     }
@@ -731,7 +762,7 @@ class Logistica
 
                     $sql .= "insert into log_kardex(tipo_movimiento,id_tipo_operacion,id_producto,id_categoria_producto,id_lote,precio,
                             fecha,id_tipo_documento,nro_doc,unidad,cantidad,id_almacen,id_referencia,id_usuario,costo_total)"
-                        . " values ('1','02','$id_producto','$id_categoria',$lote,'$precio_sin_igv','$fecha','$tipo_documento',
+                        . " values ('1','02','$id_producto','$id_categoria',$lote,'".$this->redondear_dos_decimal($precio_sin_igv)."','$fecha','$tipo_documento',
                         '$nro_documento','$producto[3]','$cantidad','$id_almacen',(select max(id) from log_compra),'$usuario',$costo_total);";
                 }
 
@@ -751,7 +782,7 @@ class Logistica
                 $sql .= "insert into log_compra_detalle(id_compra,id_producto,bonificacion,id_lote,fecha_vencimiento,cantidad,"
                     . "precio_sin_igv,monto_igv,subtotal,precio_compra_ant,nro_orden)values((select max(id) from log_compra),'$id_producto',"
                     . "'$bonificacion',$lote,'$fecha_vencimiento','$cantidad',"
-                    . "'$precio_sin_igv','$monto_igv','$subtotal','$precio_anterior','$nro_orden');";
+                    . "'".$this->redondear_dos_decimal($precio_sin_igv)."','".$this->redondear_dos_decimal($monto_igv)."','".$this->redondear_dos_decimal($subtotal)."','$precio_anterior','$nro_orden');";
             }
             $cn->prepare($sql)->execute();
             $cn->commit();
@@ -804,9 +835,9 @@ class Logistica
     function UltimaPrecioCompra($id)
     {
         $ocado = new cado();
-        $sql = "SELECT * from  log_compra_detalle where id_producto=$id order by id desc limit 1";
+        $sql = "SELECT  TOP(1) * from  log_compra_detalle where id_producto=$id order by id desc ";
         $ejecutar = $ocado->ejecutar($sql);
-        return $ejecutar;
+        return $ejecutar->fetch()['precio_sin_igv'];
     }
     // FUNCIONES PARA EL MANTENEDOR LOTE
     function ListarLote($nombre, $inicio, $numero_filas)
@@ -971,7 +1002,7 @@ class Logistica
         return $ejecutar;
     }
 
-    function ListarKardexAlmacen($id_producto,$id_almacen, $inicio, $numero_filas)
+    function ListarKardexAlmacen($id_producto, $id_almacen, $inicio, $numero_filas)
     {
         $ocado = new cado();
         $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IIF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
@@ -988,7 +1019,7 @@ class Logistica
     }
 
 
-    function TotalKardexAlmacen($id_producto,$id_almacen)
+    function TotalKardexAlmacen($id_producto, $id_almacen)
     {
         $ocado = new cado();
         $sql = "SELECT count(*) from log_kardex k JOIN log_lote l ON l.id=k.id_lote  where k.id_producto='$id_producto' and l.id_almacen=$id_almacen ;  ";
@@ -1042,7 +1073,7 @@ class Logistica
 
 
             //KARDEX
-            $precio = $this->UltimaPrecioCompra($lote['id_producto'])->fetch()['precio_sin_igv'];
+            $precio = $this->UltimaPrecioCompra($lote['id_producto']);
 
             $costo_total = $precio * $cantidad;
 
@@ -1119,7 +1150,7 @@ class Logistica
             $id_categoria_producto_destino = $producto_destino['id_categoria'];
 
 
-            $precio_origen = $this->UltimaPrecioCompra($id_producto_origen)->fetch()['precio_sin_igv'];
+            $precio_origen = $this->UltimaPrecioCompra($id_producto_origen);
             $precio_destino = $precio_origen / $cantidad_destino;
             if ($precio_destino == '') {
                 $precio_destino = '0';
@@ -1315,7 +1346,7 @@ class Logistica
             $id_categoria = $producto['id_categoria'];
             $id_unidad = $producto['id_unidad'];
 
-            $precio = $this->UltimaPrecioCompra($id_producto)->fetch()['precio_sin_igv'];
+            $precio = $this->UltimaPrecioCompra($id_producto)->fetch();
             $costo_total = $precio * $cantidad;
 
             $id_almacen = $lote['id_almacen'];
@@ -1365,7 +1396,7 @@ class Logistica
             $id_categoria = $producto['id_categoria'];
             $id_unidad = $producto['id_unidad'];
 
-            $precio = $this->UltimaPrecioCompra($calibracion['id_reactivo'])->fetch()['precio_sin_igv'];
+            $precio = $this->UltimaPrecioCompra($calibracion['id_reactivo']);
             $costo_total = $precio * $calibracion['cantidad'];
 
             $id_almacen = $lote['id_almacen'];
@@ -1385,7 +1416,7 @@ class Logistica
             $id_categoria = $producto['id_categoria'];
             $id_unidad = $producto['id_unidad'];
 
-            $precio = $this->UltimaPrecioCompra($id_producto)->fetch()['precio_sin_igv'];
+            $precio = $this->UltimaPrecioCompra($id_producto);
             $costo_total = $precio * $cantidad;
 
             $id_almacen = $lote['id_almacen'];
@@ -1437,7 +1468,7 @@ class Logistica
             $id_categoria = $producto['id_categoria'];
             $id_unidad = $producto['id_unidad'];
 
-            $precio = $this->UltimaPrecioCompra($calibracion['id_reactivo'])->fetch()['precio_sin_igv'];
+            $precio = $this->UltimaPrecioCompra($calibracion['id_reactivo']);
             $costo_total = $precio * $calibracion['cantidad'];
 
             $id_almacen = $lote['id_almacen'];
@@ -1548,7 +1579,7 @@ class Logistica
                 $id_categoria = $producto['id_categoria'];
                 $id_unidad = $producto['id_unidad'];
 
-                $precio = $this->UltimaPrecioCompra($reactivo[0])->fetch()['precio_sin_igv'];
+                $precio = $this->UltimaPrecioCompra($reactivo[0]);
                 $costo_total = $precio * $reactivo[0];
 
                 $id_almacen = $lote['id_almacen'];
@@ -1596,7 +1627,7 @@ class Logistica
                 $id_categoria = $producto['id_categoria'];
                 $id_unidad = $producto['id_unidad'];
 
-                $precio = $this->UltimaPrecioCompra($reactivo[0])->fetch()['precio_sin_igv'];
+                $precio = $this->UltimaPrecioCompra($reactivo[0]);
                 $costo_total = $precio * $reactivo[0];
 
                 $id_almacen = $lote['id_almacen'];
@@ -1625,7 +1656,7 @@ class Logistica
                 $id_categoria = $producto['id_categoria'];
                 $id_unidad = $producto['id_unidad'];
 
-                $precio = $this->UltimaPrecioCompra($reactivo[0])->fetch()['precio_sin_igv'];
+                $precio = $this->UltimaPrecioCompra($reactivo[0]);
                 $costo_total = $precio * $reactivo[0];
 
                 $id_almacen = $lote['id_almacen'];
@@ -1674,7 +1705,7 @@ class Logistica
                 $id_categoria = $producto['id_categoria'];
                 $id_unidad = $producto['id_unidad'];
 
-                $precio = $this->UltimaPrecioCompra($reactivo[0])->fetch()['precio_sin_igv'];
+                $precio = $this->UltimaPrecioCompra($reactivo[0]);
                 $costo_total = $precio * $reactivo[0];
 
                 $id_almacen = $lote['id_almacen'];

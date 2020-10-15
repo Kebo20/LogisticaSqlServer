@@ -241,7 +241,6 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
                 <tr>
                     <td><b>SUB. TOTAL(S/.)</b><input id="monto_sin_igv" disabled="" style="font-size:12px; text-align:right;width:95%" class='form-control' autocomplete="off"></td>
                     <td><b>INAFECTA(S/.)</b><input value="0.00" id="inafecta" disabled="" style="font-size:12px; text-align:right;width:95%" class='form-control' autocomplete="off"></td>
-                    <td><b>GRATUITA(S/.)</b><input value="0.00" id="gratuita" disabled="" style="font-size:12px; text-align:right;width:95%" class='form-control' autocomplete="off"></td>
 
                     <td colspan=""><b>IGV(S/.)</b><input disabled="" id="monto_igv_total" style="font-size:12px;text-align:right;  width:95%" class='form-control' autocomplete="off"></td>
                     <td colspan=""><b>IGV(%)</b><input disabled="" id="igv" style="font-size:12px;text-align:right;  width:95%" class='form-control' autocomplete="off"></td>
