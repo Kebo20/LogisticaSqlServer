@@ -19,9 +19,11 @@ function Listar(pagina) {
             $.each(data, function (key, val) {
 
                 $("#lista").append("<tr class='todo-item'>"
-               +"<td width='5%'>" + val[0] + "</td>"
+               +"<td width='2%'>" + val[0] + "</td>"
                +"<td width='5%'>" + val[1] + "</td>"
+               +"<td width='5%'>" + val[15] + "</td>"
                +"<td width='8%'>" + val[2] + "</td>"
+
                +"<td width='5%'>" + val[3] + "</td>"
                +"<td width='5%'>" + val[5] + "</td>"
                +"<td width='10%'>" + val[6] + "</td>"
@@ -32,7 +34,7 @@ function Listar(pagina) {
                +"<td width='5%' class='text-right'>S/. " + parseFloat(val[11]).toFixed(2) + "</td>"
                +"<td width='5%'>" + val[12] + "</td>"
                +"<td width='5%'>" + val[13] + "</td>"
-               +"<td width='5%'>" + val[14] + "</td>"
+               +"<td width='3%'>" + val[14] + "</td>"
                +"</tr>");
 
             })

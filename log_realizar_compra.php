@@ -66,7 +66,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
         </tr>
     </table>
     <br>
-    
+
     <table width="100%" style="font-size:12px; font-weight:bold;">
         <tr>
 
@@ -86,7 +86,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
 
                 <select id="id_cmb_alm" class="form-control" onchange="ChangeAlmacen()" style="width:90%">
                     <option value="">Seleccione</option>
-                   
+
 
                 </select>
             </td>
@@ -105,6 +105,8 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
                     <option value="3">RH</option>
                     <option value="10">GR</option>
                 </select></td>
+            <td width="15%"><b>Serie</b>
+                <input type="text" id="serie" style="text-transform:uppercase;width:95%" class="input " value="" autocomplete="off"></td>
             <td width="15%"><b>N° de doc.</b>
                 <input type="text" id="nro_documento" style="text-transform:uppercase;width:95%" class="input numero" value="" autocomplete="off"></td>
             <td width="15%"><b>Fecha</b><input type="date" onchange="ChangeFecha()" id="fecha" class='form-control' value="" style="width:95%" autocomplete="off"></td>
@@ -129,7 +131,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
         </tr>
 
     </table>
-   
+
     <hr>
     <table width="100%" class="" style="font-size:12px; font-weight:bold;">
 
@@ -148,7 +150,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
 
         </tr>
     </table>
-   
+
     <br>
     <table width="100%" style="font-size:12px; font-weight:bold;">
         <tr>
@@ -204,7 +206,7 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
                         <Th>Precio</Th>
 
                         <Th>Prec. unit. sin igv</Th>
-                       
+
                         <Th><span id='th-subtotal'>Subtotal</span></Th>
                         <Th>Bon.</Th>
 

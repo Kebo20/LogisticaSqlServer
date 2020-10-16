@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $("#afecto").focus();
+    $("#td-nro_dias").hide();
     ListarAlmacenesGral()
     var $producto_select2 = $("#id_cmb_pro").select2({
         dropdownAutoWidth: true,
@@ -115,6 +116,11 @@ function guardar() {
         $("#tipo_documento").focus();
         return false;
     }
+    if ($("#serie").val() == "") {
+        swal("Campo requerido", "Inserte serie del documento", "warning");
+        $("#serie").focus();
+        return false;
+    }
     if ($("#nro_documento").val() == "") {
         swal("Campo requerido", "Inserte número de documento", "warning");
         $("#nro_documento").focus();
@@ -216,6 +222,7 @@ function guardar() {
         proveedor: $("#id_cmb_prov").val(),
         fecha: $("#fecha").val(),
         tipo_documento: $("#tipo_documento").val(),
+        serie: $("#serie").val(),
         nro_documento: $("#nro_documento").val(),
         tipo_afectacion: $("input:radio[name=tipo_afectacion]:checked").val(),
         nota_credito: "0",
@@ -541,10 +548,10 @@ function AñadirDetalle() {
     //        $("#precio_anterior").val("0.00");
     $("#fecha_vencimiento").val("");
     setTimeout(function () {
-        $("#bonificacion").val("").trigger('chosen:updated');
+        $("#bonificacion").val("").change();
     }, 200);
     setTimeout(function () {
-        $("#id_cmb_pro").val("").trigger('chosen:updated');
+        $("#id_cmb_pro").val("").change();
     }, 200);
     setTimeout(function () {
         $("#id_cmb_pro").select2('open');
@@ -944,9 +951,16 @@ function ChangeAlmacen() {
 
 function ChangeTipoDoc() {
     setTimeout(function () {
-        $("#nro_documento").focus();
+        $("#serie").focus();
     }, 200);
 }
+$("#serie").keypress(function (e) {
+    if (e.which == 13) {
+        setTimeout(function () {
+            $("#nro_documento").focus();
+        }, 200);
+    }
+});
 
 $("#nro_documento").keypress(function (e) {
     if (e.which == 13) {
@@ -954,14 +968,14 @@ $("#nro_documento").keypress(function (e) {
     }
 });
 
-function ChangeFecha(e) {
+/*function ChangeFecha(e) {
 
 
     setTimeout(function () {
         $("#tipo_compra").select2('open');
     }, 200);
 
-}
+}*/
 
 function ChangeTipoCompra() {
     if ($("#tipo_compra").val() == 'Contado') {
@@ -997,25 +1011,28 @@ function ClickIGV() {
 }
 
 function ChangeProducto() {
+    if($("#id_cmb_pro").val()!=''){
+        $.post("controlador/Clogistica.php?op=PRECIO_COMPRA_ULTIMO", {
 
-    $.post("controlador/Clogistica.php?op=PRECIO_COMPRA_ULTIMO", {
-
-        id: $("#id_cmb_pro").val()
-    }, function (data) {
-        if (!data) {
+            id: $("#id_cmb_pro").val()
+        }, function (data) {
+            if (!data) {
+                $("#precio_anterior").val("0.00");
+            } else {
+                $("#precio_anterior").val(data);
+            }
+    
+            //console.log(data);
+        }, "JSON").fail(function () {
             $("#precio_anterior").val("0.00");
-        } else {
-            $("#precio_anterior").val(data);
-        }
+        });
+    
+        setTimeout(function () {
+            $("#precio").focus()
+        }, 200);
+    }
 
-        //console.log(data);
-    }, "JSON").fail(function () {
-        $("#precio_anterior").val("0.00");
-    });
 
-    setTimeout(function () {
-        $("#precio").focus()
-    }, 200);
 }
 
 
@@ -1030,22 +1047,27 @@ $("#cantidad").keypress(function (e) {
         $("#fecha_vencimiento").focus();
     }
 })
-function ChangeFechaVenc(e) {
+/*function ChangeFechaVenc(e) {
 
     $("#nro_lote").focus();
 
-}
+}*/
 
 $("#nro_lote").keypress(function (e) {
     if (e.which == 13) {
         setTimeout(function () {
             $("#bonificacion").select2('open');
+            
         }, 200);
     }
 })
 
 function ChangeBonificacion() {
-    AñadirDetalle();
+    
+    if($("#bonificacion").val()!=''){
+        AñadirDetalle();
+    }
+
 }
 
 $(document).keydown(function (tecla) {

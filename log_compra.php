@@ -22,6 +22,8 @@ $lista_categorias = $olog->ListarCategoriaProducto("", 0, 1000);
             <tr>
                 <th width="">N°</th>
                 <th>Doc.</th>
+                <th>Serie</th>
+
                 <th>N° Doc.</th>
                 <th>Fecha</th>
 

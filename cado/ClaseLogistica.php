@@ -663,6 +663,7 @@ class Logistica
         $tipo_afectacion,
         $nota_credito,
         $tipo_compra,
+        $serie,
         $nro_documento,
         $nro_dias,
         $id_orden,
@@ -731,9 +732,9 @@ class Logistica
             //COMPRA
 
             $sql = "insert into log_compra(fecha,id_usuario,id_proveedor,tipo_documento,tipo_afectacion,monto_sin_igv,igv,monto_igv,"
-                . "total,nota_credito,fecha_sistema,tipo_compra,nro_documento,nro_dias) values('$fecha','$usuario','$proveedor',"
+                . "total,nota_credito,fecha_sistema,tipo_compra,serie,nro_documento,nro_dias) values('$fecha','$usuario','$proveedor',"
                 . "'$tipo_documento','$tipo_afectacion',"
-                . "'" . $this->redondear_dos_decimal($monto_sin_igv) . "','$igv','" . $this->redondear_dos_decimal($monto_igv) . "','" . $this->redondear_dos_decimal($total) . "','$nota_credito','$date','$tipo_compra','$nro_documento','$nro_dias');";
+                . "'" . $this->redondear_dos_decimal($monto_sin_igv) . "','$igv','" . $this->redondear_dos_decimal($monto_igv) . "','" . $this->redondear_dos_decimal($total) . "','$nota_credito','$date','$tipo_compra','$serie','$nro_documento','$nro_dias');";
             //DETALLES
             foreach ($detalles as $detalle) {
 
@@ -824,7 +825,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "select c.fecha,u.usuario,prov.nombre,c.tipo_documento,ta.descripcion,CAST(c.monto_sin_igv as decimal(18,2)),CAST(c.igv as decimal(18,2)),CAST(c.monto_igv as decimal(18,2)),"
-            . "c.total ,c.id,c.nota_credito,c.fecha_sistema,c.tipo_compra,c.nro_documento,c.nro_dias from log_compra c inner join conf_usuario u on c.id_usuario=u.id inner join"
+            . "c.total ,c.id,c.nota_credito,c.fecha_sistema,c.tipo_compra,c.nro_documento,c.nro_dias,c.serie from log_compra c inner join conf_usuario u on c.id_usuario=u.id inner join"
             . " admin_tipo_afectacion_igv ta on ta.id=c.tipo_afectacion inner join log_proveedor prov on prov.id=c.id_proveedor where c.nro_documento like '%$q%' order by c.fecha desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ;";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;

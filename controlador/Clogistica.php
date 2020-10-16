@@ -623,6 +623,8 @@ switch ($_GET["op"]) {
         $nota_credito = $_POST['nota_credito'];
         $tipo_compra = $_POST['tipo_compra'];
         $nro_dias = $_POST['nro_dias'];
+        $serie = $_POST['serie'];
+
         $nro_documento = $_POST['nro_documento'];
         $id_orden = $_POST['id_orden'];
         $id_almacen = $_POST['id_almacen'];
@@ -635,6 +637,7 @@ switch ($_GET["op"]) {
             $tipo_afectacion,
             $nota_credito,
             $tipo_compra,
+            $serie,
             $nro_documento,
             $nro_dias,
             $id_orden,
@@ -681,10 +684,14 @@ switch ($_GET["op"]) {
             $subArray[] = $prov[8];
             $subArray[] = $prov[12];
             $subArray[] = $prov[14];
+           
+            
+
+
             $subArray[] = "<div align='center'>
                 <a  onclick=\"detalles('" . $prov["id"] . "')\" ><i class=' fa fa-search-plus' ></i> </a>";
 
-
+                $subArray[] = $prov[15];
             $datos[] = $subArray;
         }
 
