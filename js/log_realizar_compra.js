@@ -362,10 +362,7 @@ function ModificarDetalleBonificacion($fila) {
     } else {
         compra[$fila].bonificacion = '0'
     }
-
-
     listar()
-
 
 }
 

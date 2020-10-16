@@ -28,15 +28,15 @@ function Listar(pagina) {
             $.each(data, function (key, val) {
 
                 if (val[4] != '') {
-                    entrada = "<td width='8%'align='right'>S/. " + val[5] + "</td>" + "<td width='10%'align='right'>S/. " + val[6] + "</td>";
+                    entrada = "<td width='8%'align='right'>S/. " + parseFloat(val[5]).toFixed(2) + "</td>" + "<td width='10%'align='right'>S/. " + parseFloat(val[6]).toFixed(2) + "</td>";
                 } else {
-                    entrada = "<td width='8%'>" + val[5] + "</td>" + "<td width='10%'>" + val[6] + "</td>";
+                    entrada = "<td width='8%'>" + parseFloat(val[5]).toFixed(2) + "</td>" + "<td width='10%'>" + parseFloat(val[6]).toFixed(2) + "</td>";
                 }
 
                 if (val[9] != '') {
-                    salida = "<td width='8%' align='right'>S/." + val[8] + "</td>" + "<td width='10%'align='right'>S/.  " + val[9] + "</td>";
+                    salida = "<td width='8%' align='right'>S/." + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'align='right'>S/.  " +parseFloat(val[9]).toFixed(2) + "</td>";
                 } else {
-                    salida = "<td width='8%'>" + val[8] + "</td>" + "<td width='10%'>" + val[9] + "</td>"
+                    salida = "<td width='8%'>" + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'>" +parseFloat(val[9]).toFixed(2) + "</td>"
 
                 }
 
@@ -45,13 +45,13 @@ function Listar(pagina) {
                     + "<td width='5%' align='right'>" + val[1] + "</td>"
                     + "<td width='8%'>" + val[2] + "</td>"
                     + "<td width='5%' align='right'>" + val[3] + "</td>"
-                    + "<td width='5%' >" + val[4] + "</td>"
+                    + "<td width='5%' align='right'>" + val[4] + "</td>"
                     + entrada
-                    + "<td width='5%'>" + val[7] + "</td>"
+                    + "<td width='5%' align='right'>" + val[7] + "</td>"
                     + salida
-                    + "<td width='5%'>" + val[10] + "</td>"
-                    + "<td width='10%' align='right'>S/. " + val[11] + "</td>"
-                    + "<td width='10%' align='right'>S/.  " + val[12] + "</td>"
+                    + "<td width='5%' align='right'>" + val[10] + "</td>"
+                    + "<td width='10%' align='right'>S/. " + parseFloat(val[11]).toFixed(2) + "</td>"
+                    + "<td width='10%' align='right'>S/.  " + parseFloat(val[12]).toFixed(2) + "</td>"
                     + "</tr>");
 
             })

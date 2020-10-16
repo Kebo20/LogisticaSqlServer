@@ -226,7 +226,8 @@ $lista = $olog->ListarKardexAlmacen($_GET['producto'],$_GET['almacen'],0,10000);
 $i = 0;
 $fin=$lista->rowCount()+12;
 //$objPHPExcel->getActiveSheet()->getStyle('A13:M'.$fin)->applyFromArray($estiloCuerpo);
-
+$cantidad_final = 0;
+$costo_total_final = 0;
 foreach ($lista as $row) {
     $i++;
     $objPHPExcel->getActiveSheet()->setCellValue('A' . $fila, $row[0]);
@@ -239,9 +240,37 @@ foreach ($lista as $row) {
     $objPHPExcel->getActiveSheet()->setCellValue('H' . $fila, $row[7]);
     $objPHPExcel->getActiveSheet()->setCellValue('I' . $fila, $row[8]);
     $objPHPExcel->getActiveSheet()->setCellValueExplicit('J' . $fila, $row[9],PHPExcel_Cell_DataType::TYPE_STRING);
-    $objPHPExcel->getActiveSheet()->setCellValue('K' . $fila, $row[10]);
-    $objPHPExcel->getActiveSheet()->setCellValue('L' . $fila, $row[11]);
-    $objPHPExcel->getActiveSheet()->setCellValueExplicit('M' . $fila, $row[12],PHPExcel_Cell_DataType::TYPE_STRING);
+    
+    if ($row['tipo_movimiento'] == 1) {
+        $cantidad_final = $cantidad_final + $row['cantidad'];
+        $costo_total_final = $costo_total_final + $row['costo_total'];
+        $objPHPExcel->getActiveSheet()->setCellValue('K' . $fila,  $cantidad_final);
+
+        if ($cantidad_final == 0) {
+            $objPHPExcel->getActiveSheet()->setCellValue('L' . $fila,  '0.00');
+        } else {
+            
+            $objPHPExcel->getActiveSheet()->setCellValue('L' . $fila, $costo_total_final / $cantidad_final);
+        }
+        
+        $objPHPExcel->getActiveSheet()->setCellValue('M' . $fila, $costo_total_final);
+
+        
+    } else {
+        $cantidad_final = $cantidad_final - $row['cantidad'];
+        $costo_total_final = $costo_total_final - $row['costo_total'];
+        $objPHPExcel->getActiveSheet()->setCellValue('K' . $fila,  $cantidad_final);
+
+        if ($cantidad_final == 0) {
+            $objPHPExcel->getActiveSheet()->setCellValue('L' . $fila,  '0.00');
+        } else {
+            
+            $objPHPExcel->getActiveSheet()->setCellValue('L' . $fila, $costo_total_final / $cantidad_final);
+        }
+        
+        $objPHPExcel->getActiveSheet()->setCellValue('M' . $fila, $costo_total_final);
+
+    }
     
 
     $fila++;
@@ -262,4 +291,3 @@ $objWriter->save('php://output');
 
 //$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 //$objWriter->save('php://output');
-?>

@@ -843,7 +843,7 @@ class Logistica
     function ListarLote($nombre, $inicio, $numero_filas)
     {
         $ocado = new cado();
-        $sql = "SELECT l.nro,p.nombre,l.cantidad,DATE_FORMAT(l.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento,a.nombre as almacen,s.nombre as sucursal,lcu.descripcion as unidad from log_lote l
+        $sql = "SELECT l.nro,p.nombre,l.cantidad,l.fecha_vencimiento as fecha_vencimiento,a.nombre as almacen,s.nombre as sucursal,lcu.descripcion as unidad from log_lote l
          inner join log_producto p on l.id_producto=p.id inner join log_almacen a on a.id=l.id_almacen inner join cont_sucursal s on s.id=a.id_sucursal inner join log_codigo_unidad_medida lcu on lcu.id=p.unidad  "
             . "where l.nro like '%$nombre%' or p.nombre like '%$nombre%' or l.fecha_vencimiento like '%$nombre%' order by p.id desc  OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY  ";
         $ejecutar = $ocado->ejecutar($sql);
@@ -853,7 +853,7 @@ class Logistica
     function ListarLoteReactivos()
     {
         $ocado = new cado();
-        $sql = "SELECT l.id,p.nombre,l.nro,l.cantidad,DATE_FORMAT(l.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento,a.nombre as almacen,s.nombre as sucursal,lcu.descripcion as unidad from log_lote l
+        $sql = "SELECT l.id,p.nombre,l.nro,l.cantidad,l.fecha_vencimiento as fecha_vencimiento,a.nombre as almacen,s.nombre as sucursal,lcu.descripcion as unidad from log_lote l
         inner join log_producto p on l.id_producto=p.id inner join log_almacen a on a.id=l.id_almacen inner join cont_sucursal s on s.id=a.id_sucursal inner join log_codigo_unidad_medida lcu on lcu.id=p.unidad  "
             . " where l.cantidad >0 order by l.fecha_vencimiento desc ";
         $ejecutar = $ocado->ejecutar($sql);
@@ -870,7 +870,7 @@ class Logistica
     function ListarLotexAlmacen($almacen)
     {
         $ocado = new cado();
-        $sql = "SELECT l.id,l.nro,p.nombre,l.cantidad,DATE_FORMAT(l.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento,a.nombre as almacen from log_lote l
+        $sql = "SELECT l.id,l.nro,p.nombre,l.cantidad,l.fecha_vencimiento as fecha_vencimiento,a.nombre as almacen from log_lote l
          inner join log_producto p on l.id_producto=p.id inner join log_almacen a on a.id=l.id_almacen where a.id=$almacen order by p.id desc  ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
@@ -919,7 +919,7 @@ class Logistica
     function ListarLoteFraccionxAlmacen($almacen)
     {
         $ocado = new cado();
-        $sql = "SELECT l.id,l.nro,p.nombre,l.cantidad,DATE_FORMAT(l.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento,a.nombre as almacen from log_lote l
+        $sql = "SELECT l.id,l.nro,p.nombre,l.cantidad,l.fecha_vencimiento  as fecha_vencimiento,a.nombre as almacen from log_lote l
          inner join log_producto p on l.id_producto=p.id inner join log_almacen a on a.id=l.id_almacen inner join log_producto pf on p.id_producto_fraccion=pf.id where a.id=$almacen order by p.id desc  ";
         $ejecutar = $ocado->ejecutar($sql);
         return $ejecutar;
@@ -983,7 +983,7 @@ class Logistica
         $ocado = new cado();
         $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IIF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
         IIF(k.tipo_movimiento=1,cast(precio as decimal(18,2)),'0.00') as precio_entrada, IIF(k.tipo_movimiento=1,cast(costo_total as decimal(18,2)),'0.00') as costo_total_entrada, 
-        IIF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
+        IIF(k.tipo_movimiento=2,k.cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
         IIF(k.tipo_movimiento=2,cast(costo_total as decimal(18,2)),'0.00') as costo_total_salida ,k.tipo_movimiento,k.cantidad,k.costo_total
        
        FROM log_kardex k
@@ -1007,9 +1007,8 @@ class Logistica
         $ocado = new cado();
         $sql = "SELECT k.fecha,k.id_tipo_documento,k.nro_doc,k.id_tipo_operacion,IIF(k.tipo_movimiento=1,k.cantidad,'') as cantidad_entrada,
         IIF(k.tipo_movimiento=1,cast(precio as decimal(18,2)),'0.00') as precio_entrada, IIF(k.tipo_movimiento=1,cast(costo_total as decimal(18,2)),'0.00') as costo_total_entrada, 
-        IIF(k.tipo_movimiento=2,cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
-        IIF(k.tipo_movimiento=2,cast(costo_total as decimal(18,2)),'0.00') as costo_total_salida ,k.tipo_movimiento,k.cantidad,k.costo_total
-
+        IIF(k.tipo_movimiento=2,k.cantidad,'') as cantidad_salida,IIF(k.tipo_movimiento=2,cast(precio as decimal(18,2)),'0.00') as precio_salida, 
+        IIF(k.tipo_movimiento=2,cast(costo_total as decimal(18,2)),'0.00') as costo_total_salida ,k.tipo_movimiento,k.cantidad,k.costo_total 
        FROM log_kardex k
       
        JOIN log_lote l ON l.id=k.id_lote 
