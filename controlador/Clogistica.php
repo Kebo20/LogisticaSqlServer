@@ -13,6 +13,9 @@ switch ($_GET["op"]) {
     case "IGV":
         echo $olog->IGV;
         break;
+    case "I":
+        echo round(9.74,1, PHP_ROUND_HALF_UP);
+        break;
 
         //ALMACEN
 
@@ -675,7 +678,7 @@ switch ($_GET["op"]) {
             $subArray[] = $prov[5];
             $subArray[] = $prov[6];
             $subArray[] = $prov[7];
-            $subArray[] = $olog->redondear_dos_decimal($prov[8]);
+            $subArray[] = $prov[8];
             $subArray[] = $prov[12];
             $subArray[] = $prov[14];
             $subArray[] = "<div align='center'>
@@ -736,7 +739,7 @@ switch ($_GET["op"]) {
                 . "<td class='text-right'>S/." . $olog->redondear_dos_decimal($c[8]) . "  </td>"
                 . "<td class='text-right' >S/." . $olog->redondear_dos_decimal($c[9]) . "  </td>"
                 . "<td class='text-right'>S/." .  $olog->redondear_dos_decimal($c[10]) . "  </td>"
-                . "<td class='text-right'>S/." .  $olog->redondear_dos_decimal($c[11] ). "  </td>"
+                . "<td class='text-right'>S/." .  $olog->redondear_dos_decimal($c[11]) . "  </td>"
                 . "</tr>";
         }
 
@@ -748,7 +751,7 @@ switch ($_GET["op"]) {
         $id = $_POST['id'];
 
         $precio = $olog->UltimaPrecioCompra($id);
-       // $precio=$olog->redondear_dos_decimal($precio);
+        // $precio=$olog->redondear_dos_decimal($precio);
         echo $precio;
         break;
 

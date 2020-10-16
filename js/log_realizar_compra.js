@@ -55,7 +55,7 @@ $(document).ready(function () {
     $("#igv").val("0.00");
     var IGV;
     ObtenerIGV()
-    $('#inafecto').prop("checked",true)
+    $('#inafecto').prop("checked", true)
 });
 
 function ObtenerIGV() {
@@ -96,7 +96,7 @@ function guardar() {
     }
 
 
-  
+
     if ($("#d_cmb_prov").val() == "") {
         swal("Campo requerido", "Seleccione un proveedor", "warning");
         $("#d_cmb_prov").focus();
@@ -124,7 +124,7 @@ function guardar() {
         $("#fecha").focus();
         return false;
     }
- 
+
 
 
 
@@ -284,7 +284,6 @@ function listar() {
         }
 
         //Calculo del IGV
-        //.toFixed(2) RECORTA A DOS DECIMALES SIN REDONDEAR INCLUIDO ENTEROS .00
         if ($("#igv_detalle").prop("checked")) {
             compra[i].monto_igv = (compra[i].precio * IGV / (1 + IGV)).toFixed(2);
             compra[i].precio_sin_igv = (compra[i].precio - compra[i].monto_igv).toFixed(2);
@@ -380,6 +379,15 @@ function ModificarDetalleVencimiento($fila) {
 }
 
 function ModificarDetalleLote($fila) {
+    for (var i = 0; i < compra.length; i++) {
+
+        if (compra[i].nro_lote == $("#" + $fila + "_lote").val() && compra[i].id_producto == compra[$fila].id_producto) {
+            $("#" + $fila + "_lote").val("")
+            swal("Lote "+compra[i].nro_lote+" ya ingresado",compra[i].nombre_producto , "info")
+
+            return false;
+        }
+    }
 
     compra[$fila].nro_lote = $("#" + $fila + "_lote").val()
     listar()
@@ -398,9 +406,8 @@ function ModificarDetallePrecio($fila) {
 function ModificarDetalleCantidad($fila) {
 
     compra[$fila].cantidad = $("#" + $fila + "_cantidad").val()
-    //console.log(compra[$fila].cantidad)
-    //console.log(compra[$fila].cantidad_orden)
-    //comprobacion del total de la orden
+
+    //Cantidad total del producto no exceda la orden
     cantidad_total = 0;
     for (var i = 0; i < compra.length; i++) {
         if (compra[i].id_producto == compra[$fila].id_producto && compra[$fila].orden == '1') {
