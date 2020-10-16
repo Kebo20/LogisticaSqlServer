@@ -736,6 +736,7 @@ switch ($_GET["op"]) {
                 . "<td align='center'>$c[5] </td>"
                 . "<td class='text-right'>$c[13]  </td>"
                 . "<td class='text-right'>$c[7]  </td>"
+                . "<td class='text-right'>S/." . $olog->redondear_dos_decimal($c['precio']) . "  </td>"
                 . "<td class='text-right'>S/." . $olog->redondear_dos_decimal($c[8]) . "  </td>"
                 . "<td class='text-right' >S/." . $olog->redondear_dos_decimal($c[9]) . "  </td>"
                 . "<td class='text-right'>S/." .  $olog->redondear_dos_decimal($c[10]) . "  </td>"

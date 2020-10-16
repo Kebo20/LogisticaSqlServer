@@ -56,6 +56,8 @@ $(document).ready(function () {
     var IGV;
     ObtenerIGV()
     $('#inafecto').prop("checked", true)
+    $('#igv_detalle').prop("disabled", true)
+
 });
 
 function ObtenerIGV() {
@@ -285,14 +287,16 @@ function listar() {
 
         //Calculo del IGV
         if ($("#igv_detalle").prop("checked")) {
-            compra[i].monto_igv = (compra[i].precio * IGV / (1 + IGV)).toFixed(2);
+            compra[i].monto_igv = (compra[i].precio * IGV / (1 + parseFloat(IGV))).toFixed(2);
             compra[i].precio_sin_igv = (compra[i].precio - compra[i].monto_igv).toFixed(2);
-            compra[i].subtotal = ((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * compra[i].cantidad).toFixed(2);;
+            compra[i].subtotal = ((parseFloat(compra[i].precio) * compra[i].cantidad)).toFixed(2);
+            $("#th-subtotal").html("Subtotal con igv")
         } else {
-
-            compra[i].precio_sin_igv = (compra[i].precio * 1).toFixed(2);
             compra[i].monto_igv = (compra[i].precio * IGV).toFixed(2);
-            compra[i].subtotal = ((parseFloat(compra[i].precio_sin_igv) + parseFloat(compra[i].monto_igv)) * compra[i].cantidad).toFixed(2);;
+            compra[i].precio_sin_igv = (compra[i].precio * 1).toFixed(2);
+            compra[i].subtotal = ((parseFloat(compra[i].precio) * compra[i].cantidad)).toFixed(2);
+            $("#th-subtotal").html("Subtotal sin igv")
+
         }
 
         if (compra[i].bonificacion == '0') {
@@ -313,38 +317,53 @@ function listar() {
                 <td width='3%'  style='text-align:left;'>" + orden + "</td>\n\
             <td width='3%'>" + parseInt(i + 1) + "</td>\n\
             <td width='18%' style='text-align:left;'>" + compra[i].nombre_producto + "</td>\n\
-            <td width='14%' style='text-align:left;'><input type='date' style='width:100%' class='form-control' onchange=\"ModificarDetalleVencimiento(" + i + ")\" id='" + i + "_fecha_vencimiento' value='" + compra[i].fecha_vencimiento + "'> </td>\n\
+            <td width='10%' style='text-align:left;'><input type='date' style='width:100%' class='form-control' onchange=\"ModificarDetalleVencimiento(" + i + ")\" id='" + i + "_fecha_vencimiento' value='" + compra[i].fecha_vencimiento + "'> </td>\n\
             <td width='8%' style='text-align:left;'> " + nro_lote_input + "</td>\n\
             <td width='8%' align='center'> " + compra[i].cantidad_orden + "</td>\n\
             <td width='8%' align='center'> <input '  type='number'  style='width:100%' class='form-control text-right entero'  onchange=\"ModificarDetalleCantidad(" + i + ")\" id='" + i + "_cantidad'  value='" + compra[i].cantidad + "'></td>\n\
             <td width='8%' align='center'> <input type='number' style='width:100%' class='form-control text-right' onchange=\"ModificarDetallePrecio(" + i + ")\" id='" + i + "_precio'  value='" + compra[i].precio + "'></td>\n\
-            <td width='8%' align='right'>S/. " + compra[i].precio_sin_igv + "</td>\n\
-            <td width='8%' align='right'>S/. " + compra[i].monto_igv + "</td>\n\
-            <td width='8%' align='right'>S/. " + compra[i].subtotal + "</td>\n\
+            <td width='12%' align='right'>S/. " + compra[i].precio_sin_igv + "</td>\n\
+            <td width='12%' align='right'>S/. " + compra[i].subtotal + "</td>\n\
             <td width='3%'> " + bonificacion + "</td></tr>");
     }
 
 
 
-    monto_sin_igv = stotal
 
-    if ($('input:radio[name=tipo_afectacion]:checked').val() == "1") {
+
+    if ($('input:radio[name=tipo_afectacion]:checked').val() == "1" && $("#igv_detalle").prop("checked")) {
+
+        total=stotal
+        monto_igv_total = total * IGV/(1+parseFloat(IGV))
+        monto_sin_igv = total-monto_igv_total
         $("#monto_sin_igv").val(monto_sin_igv.toFixed(2))
         $("#inafecta").val("0.00")
+        $("#monto_igv_total").val(monto_igv_total.toFixed(2));
+        $("#total").val(total.toFixed(2))
+    } 
 
+    if ($('input:radio[name=tipo_afectacion]:checked').val() == "1" && !$("#igv_detalle").prop("checked")) {
+
+        monto_sin_igv=stotal
         monto_igv_total = monto_sin_igv * IGV
-    } else {
+        total= monto_sin_igv+monto_igv_total
+        $("#monto_sin_igv").val(monto_sin_igv.toFixed(2))
+        $("#inafecta").val("0.00")
+        $("#monto_igv_total").val(monto_igv_total.toFixed(2));
+        $("#total").val(total.toFixed(2))
+    } 
+    if ($('input:radio[name=tipo_afectacion]:checked').val() == "2" ) {
+
+        monto_sin_igv=stotal
+        monto_igv_total = 0
+        total= monto_sin_igv+monto_igv_total
+        $("#monto_sin_igv").val("0.00")
         $("#inafecta").val(monto_sin_igv.toFixed(2))
-        $("#monto_sin_igv").val('0.00')
+        $("#monto_igv_total").val(monto_igv_total.toFixed(2));
+        $("#total").val(total.toFixed(2))
+    } 
 
-        monto_igv_total = 0.00
-
-    }
-    $("#monto_igv_total").val(monto_igv_total.toFixed(2));
-
-
-    total = stotal + monto_igv_total
-    $("#total").val(total.toFixed(2));
+    
 }
 
 
@@ -380,7 +399,7 @@ function ModificarDetalleLote($fila) {
 
         if (compra[i].nro_lote == $("#" + $fila + "_lote").val() && compra[i].id_producto == compra[$fila].id_producto) {
             $("#" + $fila + "_lote").val("")
-            swal("Lote "+compra[i].nro_lote+" ya ingresado",compra[i].nombre_producto , "info")
+            swal("Lote " + compra[i].nro_lote + " ya ingresado", compra[i].nombre_producto, "info")
 
             return false;
         }
@@ -657,15 +676,15 @@ function DividirListar() {
         //Calculo del IGV
         //.toFixed(2) RECORTA A DOS DECIMALES SIN REDONDEAR INCLUIDO ENTEROS .00
         if ($("#igv_detalle").prop("checked")) {
-            dividir[i].monto_igv = (dividir[i].precio * IGV / (1 + IGV)).toFixed(2);
+            dividir[i].monto_igv = (dividir[i].precio * IGV / (1 + parseFloat(IGV))).toFixed(2);
 
             dividir[i].precio_sin_igv = (dividir[i].precio - dividir[i].monto_igv).toFixed(2);
-            dividir[i].subtotal = ((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * dividir[i].cantidad).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio)* dividir[i].cantidad)).toFixed(2);
 
         } else {
-            dividir[i].precio_sin_igv = (dividir[i].precio).toFixed(2);
+            dividir[i].precio_sin_igv = (dividir[i].precio*1).toFixed(2);
             dividir[i].monto_igv = (dividir[i].precio * IGV).toFixed(2);
-            dividir[i].subtotal = ((parseFloat(dividir[i].precio_sin_igv) + parseFloat(dividir[i].monto_igv)) * dividir[i].cantidad).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio)* dividir[i].cantidad)).toFixed(2);
 
         }
 
@@ -989,7 +1008,7 @@ function ChangeProducto() {
             $("#precio_anterior").val(data);
         }
 
-        console.log(data);
+        //console.log(data);
     }, "JSON").fail(function () {
         $("#precio_anterior").val("0.00");
     });

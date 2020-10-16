@@ -685,6 +685,7 @@ class Logistica
 
             //CÁLCULO DEL DETALLE
             $sub_total = 0;
+            $detalles = array();
             foreach ($detalles_compra as $detalle) {
 
                 if ($igv_detalle == '1') { //FACT. AFECTA A IGV  
@@ -694,29 +695,47 @@ class Logistica
                     $detalle['monto_igv'] = $detalle['precio'] * $this->IGV;
                     $detalle['precio_sin_igv'] = $detalle['precio'];
                 }
-                $detalle['subtotal']= (($detalle['precio_sin_igv'] + $detalle['monto_igv']) * $detalle['cantidad']);
-                $sub_total =  $sub_total +$detalle['subtotal'];
+                $detalle['subtotal'] = (($detalle['precio']) * $detalle['cantidad']);
+                if ($detalle['bonificacion'] == '0') {
+                    $sub_total =  $sub_total + $detalle['subtotal'];
+                } else {
+                    $detalle['subtotal'] = 0;
+                }
+
+                $detalles[] = $detalle;
             }
             //CÁLCULO DEL TOTAL
-            $monto_sin_igv = $sub_total;
-            if ($tipo_afectacion == '1') {
 
-                $monto_igv = $this->IGV * $monto_sin_igv;
-                $igv=$this->IGV;
-            } else {
-                $monto_igv = 0;
-                $igv=0;
+
+            if ($tipo_afectacion == '1' && $igv_detalle == '1') {
+                $total = $sub_total;
+                $monto_igv = $total * $this->IGV/(1+$this->IGV);
+                $monto_sin_igv = $total - $monto_igv;
+                $igv = $this->IGV;
             }
 
-            $total = $monto_sin_igv + $monto_igv;
+            if ($tipo_afectacion == '1' && $igv_detalle == '0') {
+                $monto_sin_igv = $sub_total;
+                $monto_igv = $monto_sin_igv * $this->IGV;
+                $total = $monto_sin_igv + $monto_igv;
+                $igv = $this->IGV;
+            }
 
+            if ($tipo_afectacion == '2') {
+                $monto_sin_igv = $sub_total;
+                $monto_igv = 0;
+                $total = $monto_sin_igv + $monto_igv;
+                $igv = $this->IGV;
+            }
+
+            //COMPRA
 
             $sql = "insert into log_compra(fecha,id_usuario,id_proveedor,tipo_documento,tipo_afectacion,monto_sin_igv,igv,monto_igv,"
                 . "total,nota_credito,fecha_sistema,tipo_compra,nro_documento,nro_dias) values('$fecha','$usuario','$proveedor',"
                 . "'$tipo_documento','$tipo_afectacion',"
-                . "'".$this->redondear_dos_decimal($monto_sin_igv)."','$igv','".$this->redondear_dos_decimal($monto_igv)."','".$this->redondear_dos_decimal($total)."','$nota_credito','$date','$tipo_compra','$nro_documento','$nro_dias');";
-
-            foreach ($detalles_compra as $detalle) {
+                . "'" . $this->redondear_dos_decimal($monto_sin_igv) . "','$igv','" . $this->redondear_dos_decimal($monto_igv) . "','" . $this->redondear_dos_decimal($total) . "','$nota_credito','$date','$tipo_compra','$nro_documento','$nro_dias');";
+            //DETALLES
+            foreach ($detalles as $detalle) {
 
                 $id_producto = $detalle['id_producto'];
                 $cantidad_orden = $detalle['cantidad_orden'];
@@ -725,6 +744,7 @@ class Logistica
                 $fecha_vencimiento = $detalle['fecha_vencimiento'];
                 $bonificacion = $detalle['bonificacion'];
                 $nro_lote = $detalle['nro_lote'];
+                $precio = $detalle['precio'];
                 $precio_sin_igv = $detalle['precio_sin_igv'];
                 $monto_igv = $detalle['monto_igv'];
                 $subtotal = $detalle['subtotal'];
@@ -762,7 +782,7 @@ class Logistica
 
                     $sql .= "insert into log_kardex(tipo_movimiento,id_tipo_operacion,id_producto,id_categoria_producto,id_lote,precio,
                             fecha,id_tipo_documento,nro_doc,unidad,cantidad,id_almacen,id_referencia,id_usuario,costo_total)"
-                        . " values ('1','02','$id_producto','$id_categoria',$lote,'".$this->redondear_dos_decimal($precio_sin_igv)."','$fecha','$tipo_documento',
+                        . " values ('1','02','$id_producto','$id_categoria',$lote,'" . $this->redondear_dos_decimal($precio_sin_igv) . "','$fecha','$tipo_documento',
                         '$nro_documento','$producto[3]','$cantidad','$id_almacen',(select max(id) from log_compra),'$usuario',$costo_total);";
                 }
 
@@ -779,10 +799,10 @@ class Logistica
                 }
 
                 //Insertar detalles de compra
-                $sql .= "insert into log_compra_detalle(id_compra,id_producto,bonificacion,id_lote,fecha_vencimiento,cantidad,"
+                $sql .= "insert into log_compra_detalle(id_compra,id_producto,bonificacion,id_lote,fecha_vencimiento,cantidad,precio,"
                     . "precio_sin_igv,monto_igv,subtotal,precio_compra_ant,nro_orden)values((select max(id) from log_compra),'$id_producto',"
-                    . "'$bonificacion',$lote,'$fecha_vencimiento','$cantidad',"
-                    . "'".$this->redondear_dos_decimal($precio_sin_igv)."','".$this->redondear_dos_decimal($monto_igv)."','".$this->redondear_dos_decimal($subtotal)."','$precio_anterior','$nro_orden');";
+                    . "'$bonificacion',$lote,'$fecha_vencimiento','$cantidad','$precio',"
+                    . "'" . $this->redondear_dos_decimal($precio_sin_igv) . "','" . $this->redondear_dos_decimal($monto_igv) . "','" . $this->redondear_dos_decimal($subtotal) . "','$precio_anterior','$nro_orden');";
             }
             $cn->prepare($sql)->execute();
             $cn->commit();

@@ -87,6 +87,7 @@ $lista_categorias = $olog->ListarCategoriaProducto("", 0, 1000);
                                 <th>Lote</th>
                                 <th>Cant.</th>
                                 <th>Precio</th>
+                                <th>Precio sin igv</th>
                                 <th>Monto IGV</th>
                                 <th>Subtotal</th>
                                 <th>Prec. ant.</th>

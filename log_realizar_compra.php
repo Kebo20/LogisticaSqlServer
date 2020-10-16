@@ -201,11 +201,11 @@ $lista_sucursales = $osucursal->ListarTodoSucursal();
 
                         <Th>Cant. ord.</Th>
                         <Th>Cant.</Th>
-                        <Th>Prec.</Th>
+                        <Th>Precio</Th>
 
-                        <Th>Prec. sin igv</Th>
-                        <Th>IGV</Th>
-                        <Th>Subt.</Th>
+                        <Th>Prec. unit. sin igv</Th>
+                       
+                        <Th><span id='th-subtotal'>Subtotal</span></Th>
                         <Th>Bon.</Th>
 
                     </tr>
