@@ -1527,7 +1527,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "SELECT c.fecha,m.nombre as nombre_maquina,c.cantidad from calibracion c  inner join log_producto r on r.id=c.id_reactivo
-         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
+         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and DATEADD(DAY,-1,'$fecha2') and id_reactivo='$id_reactivo' and c.estado='0' ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1536,7 +1536,7 @@ class Logistica
     {
         $ocado = new cado();
         $sql = "SELECT sum(c.cantidad) from calibracion c  inner join log_producto r on r.id=c.id_reactivo
-         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and '$fecha2' and id_reactivo='$id_reactivo' and c.estado='0' ";
+         inner join log_maquina m on m.id=c.id_maquina  where c.fecha between '$fecha1' and DATEADD(DAY,-1,'$fecha2') and id_reactivo='$id_reactivo' and c.estado='0' ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1778,7 +1778,7 @@ class Logistica
         inner join examen_reactivo er on ce.id_examen=er.id_examen 
         inner join examen e on e.id=ce.id_examen 
         
-        where ce.fecha BETWEEN DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and '$fecha2' and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
+        where ce.fecha BETWEEN DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and DATEADD(DAY,-1,'$fecha2') and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1788,7 +1788,7 @@ class Logistica
         $sql = "SELECT sum(er.cantidad) FROM cliente_examen ce 
         inner join examen_reactivo er on ce.id_examen=er.id_examen 
         inner join examen e on e.id=ce.id_examen 
-        where ce.fecha BETWEEN '$fecha1' and '$fecha2' and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
+        where ce.fecha BETWEEN '$fecha1' and DATEADD(DAY,-1,'$fecha2') and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
