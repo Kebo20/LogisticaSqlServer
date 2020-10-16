@@ -1778,7 +1778,7 @@ class Logistica
         inner join examen_reactivo er on ce.id_examen=er.id_examen 
         inner join examen e on e.id=ce.id_examen 
         
-        where ce.fecha BETWEEN DATE(DATE_ADD('$fecha1', INTERVAL 0 DAY)) and DATEADD(DAY,-1,'$fecha2') and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
+        where ce.fecha BETWEEN '$fecha1' and DATEADD(DAY,-1,'$fecha2') and er.id_reactivo=$id and e.estado='0' and er.estado='0' and ce.estado='0'";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
