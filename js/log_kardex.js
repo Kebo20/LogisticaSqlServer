@@ -34,9 +34,9 @@ function Listar(pagina) {
                 }
 
                 if (val[9] != '') {
-                    salida = "<td width='8%' align='right'>S/." + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'align='right'>S/.  " +parseFloat(val[9]).toFixed(2) + "</td>";
+                    salida = "<td width='8%' align='right'>S/." + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'align='right'>S/.  " + parseFloat(val[9]).toFixed(2) + "</td>";
                 } else {
-                    salida = "<td width='8%'>" + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'>" +parseFloat(val[9]).toFixed(2) + "</td>"
+                    salida = "<td width='8%'>" + parseFloat(val[8]).toFixed(2) + "</td>" + "<td width='10%'>" + parseFloat(val[9]).toFixed(2) + "</td>"
 
                 }
 
@@ -55,47 +55,6 @@ function Listar(pagina) {
                     + "</tr>");
 
             })
-
-            $.ajax({
-
-                url: 'controlador/Clogistica.php?op=PAG_KARDEX&producto=' + $("#producto").val(),
-                type: "POST",
-                dataType: "json",
-
-                success: function (cont) {
-
-                    $("#paginacion").html("");
-                    if (cont == 0) {
-                        $("#lista").html("<td class='text-center' colspan='12'>No se encontraron resultados</tr>");
-                        return false
-                    }
-                    if (pagina > 1) {
-                        $("#paginacion").append("<span class='btn btn-xs ' onclick='Listar(" + (pagina - 1) + ")' ><b><icon class='fa fa-chevron-left'></icon></span>");
-
-                    }
-
-                    for (var i = 1; i <= cont; i++) {
-
-                        $("#paginacion").append("<span class='btn btn-xs ' id='pagina" + i + "' onclick='Listar(" + i + ")' >" + i + "</span>");
-
-                    }
-
-                    if (pagina < cont) {
-                        $("#paginacion").append("<span class='btn btn-xs 'onclick='Listar(" + (pagina + 1) + ")'><b><icon class=' fa fa-chevron-right'></icon></span>");
-
-                    }
-
-                    $("#pagina" + pagina).removeAttr("class");
-                    $("#pagina" + pagina).attr("class", "btn btn-dark");
-                },
-
-                error: function (e) {
-                    console.log(e)
-                    $("#lista").html("<td class='text-center' colspan='12'>No se encontraron resultados</tr>");
-
-                    $("#paginacion").html("");
-                }
-            });
 
 
         },

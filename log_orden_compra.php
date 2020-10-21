@@ -22,7 +22,7 @@ $lista_categorias = $olog->ListarCategoriaProducto('', 0, 1000);
 
 <input type="hidden" id="IdFilaUsu" />
 <input type="hidden" id="idvalor" />
-<div align='center' class="modal-body scroll">
+<div align='center' class="modal-body ">
 
     <table width="81%" style="font-size:12px; font-weight:bold;">
         <tr style='display:none'>
@@ -125,10 +125,10 @@ $lista_categorias = $olog->ListarCategoriaProducto('', 0, 1000);
                 <input type="text" id="OCcantidad" value="" style="width:95%" class="input numero" autocomplete="off">
             </td>
             <td width="10%"><b>Unidad</b><br>
-                <input type="text" id="OCunidad" readonly value="" style="width:95%" class='form-control' autocomplete="off">
+                <input type="text" id="OCunidad" readonly value="" style="width:95%" class='input' autocomplete="off">
             </td>
             <td width="10%"><b>Stock</b><br>
-                <input type="text" readonly value="" style="text-transform:uppercase;width:95%" class='form-control' autocomplete="off">
+                <input type="text" readonly value="" style="text-transform:uppercase;width:95%" class='input' autocomplete="off">
             </td>
 
 
@@ -141,7 +141,6 @@ $lista_categorias = $olog->ListarCategoriaProducto('', 0, 1000);
         </tr>
     </table>
     <br>
-    <div align='center'  style="overflow-y: scroll;height: 200px;">
 
         <table id="IdTblOCD" style="border:1.5px solid darkgrey;border-radius: 4px;padding: 10px;" width="100%" class="table table-responsive table-bordered table-striped text-left">
             <thead>
@@ -158,32 +157,12 @@ $lista_categorias = $olog->ListarCategoriaProducto('', 0, 1000);
             </thead>
             <tbody id="IdCuerpoOCD" style="font-size:13px;">
 
-                <tr>
-                    <td colspan="7"></td>
-
-                </tr>
-                <tr>
-                    <td colspan="7"></td>
-
-                </tr>
-                <tr>
-                    <td colspan="7"></td>
-
-                </tr>
-                <tr>
-                    <td colspan="7"></td>
-
-                </tr>
-                <tr>
-                    <td colspan="7"></td>
-
-                </tr>
+              
 
 
             </tbody>
         </table>
 
-    </div>
 
 
     <br>

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
 
 
@@ -37,7 +37,7 @@ $(document).ready(function() {
 
 
 
-    $('.numero').on("keypress", function() {
+    $('.numero').on("keypress", function () {
         if (event.keyCode > 47 && event.keyCode < 60 || event.keyCode == 46) {
 
         } else {
@@ -49,35 +49,37 @@ $(document).ready(function() {
 });
 
 
-$("#TAsuc_org").change(function() {
-    almacenxsucursal1()
-    setTimeout(function() {
-        $("#TAalm_org").select2('open');
+$("#TAsuc_org").change(function () {
+    if ($("#TAsuc_org").val() != "") {
+        almacenxsucursal1()
+        setTimeout(function () {
+            $("#TAalm_org").select2('open');
 
-    }, 100);
-
+        }, 100);
+    }
 });
-$("#TAalm_org").change(function() {
-    
-    setTimeout(function() {
-        $("#TAsuc_des").select2('open');
-    }, 100);
-    setTimeout(function() {
-        LotexAlmacen()
-    }, 600);
+$("#TAalm_org").change(function () {
+    if ($("#TAalm_org").val() != "") {
 
+        setTimeout(function () {
+            $("#TAsuc_des").select2('open');
+        }, 100);
+        setTimeout(function () {
+            LotexAlmacen()
+        }, 600);
+    }
 });
 
 
 
 function almacenxsucursal1() {
-  $("#TAalm_org").html("");
+    $("#TAalm_org").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
         sucursal: $("#TAsuc_org").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#TAalm_org").html(data);
-       // console.log(data);
+        // console.log(data);
 
     });
 }
@@ -87,29 +89,30 @@ function LotexAlmacen() {
     $("#TAproducto").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_LOTExALM", {
         almacen: $("#TAalm_org").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#TAproducto").html(data);
-        console.log(data);
+        // console.log(data);
 
     });
 }
 
-$("#TAsuc_des").change(function() {
-    almacenxsucursal2()
-    setTimeout(function() {
-        $("#TAalm_des").select2('open');
+$("#TAsuc_des").change(function () {
+    if ($("#TAsuc_des").val() != "") {
+        almacenxsucursal2()
+        setTimeout(function () {
+            $("#TAalm_des").select2('open');
 
-    }, 100);
-
+        }, 100);
+    }
 });
-$("#TAalm_des").change(function() {
-    almacenxsucursal2()
-    setTimeout(function() {
-        $("#TAproducto").select2('open');
+$("#TAalm_des").change(function () {
+    if ($("#TAalm_des").val() != "") {
+        setTimeout(function () {
+            $("#TAproducto").select2('open');
 
-    }, 100);
-
+        }, 100);
+    }
 });
 
 
@@ -117,7 +120,7 @@ function almacenxsucursal2() {
     $("#TAalm_des").html("");
     $.post("controlador/Clogistica.php?op=LISTAR_ALMxSUC", {
         sucursal: $("#TAsuc_des").val(),
-    }, function(data) {
+    }, function (data) {
 
         $("#TAalm_des").html(data);
         // console.log(data);
@@ -129,16 +132,15 @@ function almacenxsucursal2() {
 
 
 
-$("#TAproducto").change(function() {
-
-    MostrarStockUnidad()
-    $("#TAcantidad").focus()
-
-
+$("#TAproducto").change(function () {
+    if ($("#TAproducto").val() != "") {
+        MostrarStockUnidad()
+        $("#TAcantidad").focus()
+    }
 });
 
 
-$("#TAfraccionar").change(function() {
+$("#TAfraccionar").change(function () {
 
     MostrarStockUnidad()
 
@@ -154,7 +156,7 @@ function MostrarStockUnidad() {
 
     $.post("controlador/Clogistica.php?op=PRODUCTOxLOTE", {
         lote: $("#TAproducto").val(),
-    }, function(data) {
+    }, function (data) {
 
 
         stock = data.stock
@@ -171,10 +173,10 @@ function MostrarStockUnidad() {
 
 }
 
-$("#TAcantidad").change(function() {
+$("#TAcantidad").change(function () {
     if ($("#TAcantidad").val() > parseInt(stock)) {
         swal("Cantidad excede el stock", "", "error")
-         $("#TAcantidad").val("")
+        $("#TAcantidad").val("")
         $("#TAcantidad").focus();
         return false
     }
@@ -185,7 +187,7 @@ function Transferir() {
 
     if ($("#TAalm_org").val() == "") {
         swal("Campo requerido", "Seleccione un almacén de origen", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#TAalm_org").select2('open');
         }, 200);
         return false;
@@ -193,13 +195,13 @@ function Transferir() {
 
     if ($("#TAalm_des").val() == "") {
         swal("Campo requerido", "Seleccione un almacén de destino", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#TAalm_des").select2('open');
         }, 200);
         return false;
     }
 
-    if ($("#TAalm_des").val() == $("#TAalm_org").val()) {
+    if ($("#TAalm_des").val() == $("#TAalm_org").val() ) {
         swal("Almacenes iguales", "Seleccione un almacén distinto", "warning");
 
         return false;
@@ -208,7 +210,7 @@ function Transferir() {
 
     if ($("#TAproducto").val() == "") {
         swal("Campo requerido", "Seleccione un producto", "warning");
-        setTimeout(function() {
+        setTimeout(function () {
             $("#TAproducto").select2('open');
         }, 200);
         return false;
@@ -225,12 +227,10 @@ function Transferir() {
 
     if ($("#TAcantidad").val() > parseInt(stock)) {
         swal("Cantidad excede el stock", "", "error")
-        //$("#TAcantidad").val("")
+        $("#TAcantidad").val("")
         $("#TAcantidad").focus();
         return false
     }
-
-
 
 
     $.post("controlador/Clogistica.php?op=TRANSEFERIR_ALM", {
@@ -244,14 +244,15 @@ function Transferir() {
 
 
 
-    }, function(data) {
+    }, function (data) {
 
         if (data == 1) {
             swal("Correcto", "Orden registrada correctamente", "success");
         } else {
             swal("Error", "Orden no registrada ", "error");
         }
-        $("#TAsuc_org,#TAsuc_des,#TAalm_org,#TAalm_des,#TAproducto,#TAcantidad,#TAstock,#TAunidad").val("")
+        $("#TAalm_org,#TAalm_des").html("<option value=''>Seleccione</option>");
+        $("#TAsuc_org,#TAsuc_des,#TAalm_org,#TAalm_des,#TAproducto,#TAcantidad,#TAstock,#TAunidad").val("").change()
         stock = ''
         unidad = ''
         console.log(data);

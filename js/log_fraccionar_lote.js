@@ -40,22 +40,24 @@ $(document).ready(function () {
 
 
 $("#TAsuc_org").change(function () {
-    almacenxsucursal1()
-    setTimeout(function () {
-        $("#TAalm_org").select2('open');
+    if ($("#TAsuc_org").val() != "") {
+        almacenxsucursal1()
+        setTimeout(function () {
+            $("#TAalm_org").select2('open');
 
-    }, 100);
-
+        }, 100);
+    }
 
 });
 
 $("#TAalm_org").change(function () {
+    if ($("#TAalm_org").val() != "") {
+        LotexAlmacen()
+        setTimeout(function () {
+            $("#TAproducto").select2('open');
+        }, 100);
 
-    setTimeout(function () {
-        $("#TAproducto").select2('open');
-    }, 100);
-
-
+    }
 });
 
 
@@ -72,16 +74,6 @@ function almacenxsucursal1() {
 }
 
 
-
-
-
-$("#TAalm_org").change(function () {
-    LotexAlmacen()
-
-
-
-});
-
 function LotexAlmacen() {
     $("#TAproducto").html("");
     $.post("controlador/Clogistica.php?op=LIS_LOTE_FRACCIONxALM", {
@@ -95,9 +87,9 @@ function LotexAlmacen() {
 }
 
 $("#TAproducto").change(function () {
-
-    MostrarStockUnidad()
-    
+    if ($("#TAproducto").val() != "") {
+        MostrarStockUnidad()
+    }
 });
 
 
@@ -159,7 +151,7 @@ $("#TAcantidad").change(function () {
 
 
 function Fraccionar() {
-
+  
     if ($("#TAalm_org").val() == "") {
         swal("Campo requerido", "Seleccione un almacén ", "warning");
         setTimeout(function () {
@@ -209,13 +201,10 @@ function Fraccionar() {
         } else {
             swal("Error", "No registrado correctamente ", "error");
         }
-        $("#TAsuc_org,#TAalm_org,#TAproducto,#TAcantidad,#TAstock,#TAunidad,#TAunidad_equi,#TAfraccion_equi,#TAcantidad_fraccion,#TAunidad_fraccion").val("").change()
 
-        stock = ''
-        unidad = ''
-        cantidad_fraccion = ''
-        console.log(data);
-        $("#TAcantidad_fraccion").val("")
+        Limpiar()
+        //console.log(data);
+        
         $("#FLbtn_guardar").attr("disabled", false)
 
     });
@@ -224,6 +213,8 @@ function Fraccionar() {
 }
 
 function Limpiar() {
+    $("#TAalm_org,#TAproducto").html("<option value=''>Seleccione</option>");
+
     $("#TAsuc_org,#TAalm_org,#TAproducto,#TAcantidad,#TAstock,#TAunidad,#TAunidad_equi,#TAfraccion_equi,#TAcantidad_fraccion,#TAunidad_fraccion").val("").change()
     $("#FLbtn_guardar").attr("disabled", false)
 

@@ -418,7 +418,7 @@ class Logistica
             $ocado = new cado();
             $cn = $ocado->conectar();
             $cn->beginTransaction();
-            $usuario = "kevin";
+            $usuario = "1";
             $date = date('d-m-Y H:i:s');
             $sql = "insert into log_orden_compra(numero,fecha,id_sucursal,id_almacen,referencia,id_usuario,fecha_sistema,estado,tipo) "
                 . "values('$nro','$fecha','$sucursal','$almacen','$referencia','$usuario','$date','pendiente','$tipo');";
@@ -445,8 +445,8 @@ class Logistica
         } catch (PDOException $ex) {
             $cn->rollBack();
             $cn = null;
-            $return = 0;
-            // $return = $ex->getMessage();
+            //$return = 0;
+             $return = $ex->getMessage();
         }
 
         return $return;
@@ -459,7 +459,7 @@ class Logistica
             $ocado = new cado();
             $cn = $ocado->conectar();
             $cn->beginTransaction();
-            $usuario = "kevin";
+            $usuario = "1";
             $date = date('d-m-Y H:i:s');
             $sql = "update  log_orden_compra set numero='$nro' , fecha='$fecha', id_sucursal='$sucursal' , id_almacen='$almacen',"
                 . "referencia='$referencia',id_usuario='$usuario',fecha_sistema='$date',tipo='$tipo' "
@@ -1009,7 +1009,7 @@ class Logistica
        
        FROM log_kardex k
        
-       where k.id_producto=$id_producto order by k.fecha asc ,k.id asc   OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+       where k.id_producto=$id_producto order by k.fecha asc ,k.id asc    ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1033,7 +1033,7 @@ class Logistica
        FROM log_kardex k
       
        JOIN log_lote l ON l.id=k.id_lote 
-       where k.id_producto=$id_producto and l.id_almacen=$id_almacen  order by k.fecha asc,k.id asc    OFFSET $inicio ROWS FETCH NEXT $numero_filas ROWS ONLY ";
+       where k.id_producto=$id_producto and l.id_almacen=$id_almacen  order by k.fecha asc,k.id asc     ";
         $listar = $ocado->ejecutar($sql);
         return $listar;
     }
@@ -1050,8 +1050,7 @@ class Logistica
 
     function TransferenciaAlmacen($almacen_origen, $almacen_destino, $cantidad, $unidad, $id_lote)
     {
-        $ocado = new cado();
-
+       
         try {
             $ocado = new cado();
             $cn = $ocado->conectar();
@@ -1064,7 +1063,7 @@ class Logistica
             $lote = $this->ListarLotexid($id_lote)->fetch();
 
             //DISMINUYE  CANTIDAD EN LOTE DE ALMACEN DE ORIGEN
-            $sql = "update log_lote set cantidad=cantidad-$cantidad where id=$id_lote;";
+            $sql = "update log_lote set cantidad=cantidad-$cantidad where id=$id_lote;" ;
 
 
 

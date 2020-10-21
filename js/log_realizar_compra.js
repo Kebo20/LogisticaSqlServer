@@ -251,18 +251,26 @@ function guardar() {
 function cancelar() {
     compra = new Array();
     $("#monto_igv_total").val("0.00");
+    $("#monto_sin_igv").val("0.00");
+    $("#total").val("0.00");
+    $("#igv").val("0.00");
+    $("#serie").val("");
     $("#nro_documento").val("");
+    $("#id_cmb_prov").val("").change();
     $("#nro_dias").val("");
     $("#nro_lote").val("");
     $("#cantidad").val("");
     $("#precio_anterior").val("");
-    $("#monto_sin_igv").val("0.00");
-    $("#total").val("0.00");
     $("#fecha").val("");
     $("#orden").val("");
-    $("#igv").val("");
     $("#fecha_vencimiento").val("");
-
+    $("#id_cmb_suc").val("").change();
+    $("#id_cmb_alm").html("<option value=''>Seleccione </option>");
+    $("#id_cmb_alm").val("").change();
+    $("#tipo_documento").val("").change();
+    $("#tipo_compra").val("").change();
+    $("#id_cmb_suc").prop("disabled",false);
+    $("#id_cmb_alm").prop("disabled",false);
     listar();
 }
 
@@ -340,37 +348,37 @@ function listar() {
 
     if ($('input:radio[name=tipo_afectacion]:checked').val() == "1" && $("#igv_detalle").prop("checked")) {
 
-        total=stotal
-        monto_igv_total = total * IGV/(1+parseFloat(IGV))
-        monto_sin_igv = total-monto_igv_total
+        total = stotal
+        monto_igv_total = total * IGV / (1 + parseFloat(IGV))
+        monto_sin_igv = total - monto_igv_total
         $("#monto_sin_igv").val(monto_sin_igv.toFixed(2))
         $("#inafecta").val("0.00")
         $("#monto_igv_total").val(monto_igv_total.toFixed(2));
         $("#total").val(total.toFixed(2))
-    } 
+    }
 
     if ($('input:radio[name=tipo_afectacion]:checked').val() == "1" && !$("#igv_detalle").prop("checked")) {
 
-        monto_sin_igv=stotal
+        monto_sin_igv = stotal
         monto_igv_total = monto_sin_igv * IGV
-        total= monto_sin_igv+monto_igv_total
+        total = monto_sin_igv + monto_igv_total
         $("#monto_sin_igv").val(monto_sin_igv.toFixed(2))
         $("#inafecta").val("0.00")
         $("#monto_igv_total").val(monto_igv_total.toFixed(2));
         $("#total").val(total.toFixed(2))
-    } 
-    if ($('input:radio[name=tipo_afectacion]:checked').val() == "2" ) {
+    }
+    if ($('input:radio[name=tipo_afectacion]:checked').val() == "2") {
 
-        monto_sin_igv=stotal
+        monto_sin_igv = stotal
         monto_igv_total = 0
-        total= monto_sin_igv+monto_igv_total
+        total = monto_sin_igv + monto_igv_total
         $("#monto_sin_igv").val("0.00")
         $("#inafecta").val(monto_sin_igv.toFixed(2))
         $("#monto_igv_total").val(monto_igv_total.toFixed(2));
         $("#total").val(total.toFixed(2))
-    } 
+    }
 
-    
+
 }
 
 
@@ -573,10 +581,9 @@ function eliminar(id) {
 dividir = new Array()
 
 function DividirAñadirDetalle() {
-
-    if ($("#dividir-fecha_vencimiento").val() == "") {
-        swal("Campo requerido", "Inserte una fecha", "warning");
-        $("#dividir-fecha_vencimiento").focus();
+    if ($("#dividir-precio").val() == "") {
+        swal("Campo requerido", "Inserte un precio", "warning");
+        $("#dividir-precio").focus();
         return false;
     }
     if ($("#dividir-cantidad").val() == "") {
@@ -584,11 +591,12 @@ function DividirAñadirDetalle() {
         $("#dividir-cantidad").focus();
         return false;
     }
-    if ($("#dividir-precio").val() == "") {
-        swal("Campo requerido", "Inserte un precio", "warning");
-        $("#dividir-precio").focus();
+    if ($("#dividir-fecha_vencimiento").val() == "") {
+        swal("Campo requerido", "Inserte una fecha", "warning");
+        $("#dividir-fecha_vencimiento").focus();
         return false;
     }
+   
     if ($("#dividir-bonificacion").val() == "") {
         swal("Campo requerido", "Seleccione bonificación", "warning");
         $("#dividir-bonificacion").focus();
@@ -633,9 +641,6 @@ function DividirAñadirDetalle() {
             dividir[i].cantidad = parseInt(dividir[i].cantidad) + parseInt(cantidad);
             DividirListar();
 
-            $("#dividir-cantidad").val("");
-            $("#dividir-unidad").val("");
-
 
             return false;
         }
@@ -658,6 +663,14 @@ function DividirAñadirDetalle() {
         nro_lote: nro_lote
     };
     dividir.push(detalle);
+    $("#dividir-cantidad").val("");
+    $("#dividir-precio").val("")
+    $("#dividir-fecha_vencimiento").val("")
+    $("#dividir-nro_lote").val("")
+    $("#dividir-unidad").val("");
+    $("#dividir-bonificacion").val("")
+
+
     DividirListar();
 
 
@@ -686,18 +699,18 @@ function DividirListar() {
             dividir[i].monto_igv = (dividir[i].precio * IGV / (1 + parseFloat(IGV))).toFixed(2);
 
             dividir[i].precio_sin_igv = (dividir[i].precio - dividir[i].monto_igv).toFixed(2);
-            dividir[i].subtotal = ((parseFloat(dividir[i].precio)* dividir[i].cantidad)).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio) * dividir[i].cantidad)).toFixed(2);
 
         } else {
-            dividir[i].precio_sin_igv = (dividir[i].precio*1).toFixed(2);
+            dividir[i].precio_sin_igv = (dividir[i].precio * 1).toFixed(2);
             dividir[i].monto_igv = (dividir[i].precio * IGV).toFixed(2);
-            dividir[i].subtotal = ((parseFloat(dividir[i].precio)* dividir[i].cantidad)).toFixed(2);
+            dividir[i].subtotal = ((parseFloat(dividir[i].precio) * dividir[i].cantidad)).toFixed(2);
 
         }
 
 
 
-        $("#IdCuerpoCD-dividir").append("<tr><td width='3%' class='text-left'><span class=' text-left' onclick='DividirEliminar(" + i + ")'><icon class='ft-trash'></icon></span></td>\n\
+        $("#IdCuerpoCD-dividir").append("<tr><td width='3%' class='text-left'><span class=' text-left' onclick='DividirEliminar(" + i + ")'><icon class='fa fa-trash'></icon></span></td>\n\
                 <td width='3%'  style='text-align:left;'>" + orden + "</td>\n\
             <td width='3%'>" + parseInt(i + 1) + "</td>\n\
             <td width='10%' style='text-align:left;'>" + dividir[i].nombre_producto + "</td>\n\
@@ -816,7 +829,6 @@ function PintarFilaECOC($id) {
     $("#" + $id).css("background-color", "#6FA0B9")
     $("#" + $id).css("color", "white")
 
-
     $("#IdFilaECOC").val($id);
     ECLlenarOrdenDetalle($id);
 }
@@ -886,13 +898,15 @@ function LlenarDatos() {
             };
             if (detalles[i].pendiente > 0) {
                 compra.push(compra_detalle);
+                listar();
+                $("#ECModalOrdenCompra").modal('hide');
+            }else{
+                swal("Orden sin pendientes", "seleccione otro registro", "warning");
             }
 
         }
 
-        listar();
-        $("#ECModalOrdenCompra").modal('hide');
-        //console.log(compra);
+       
     }, 'JSON');
 
 
@@ -919,40 +933,49 @@ function ClickInafecto() {
 
 
 function ChangeProv() {
-    setTimeout(function () {
-        $("#id_cmb_suc").select2('open');
-    }, 200);
+    if ($("#id_cmb_prov").val() != "" ) {
+        setTimeout(function () {
+            $("#id_cmb_suc").select2('open');
+        }, 200);
+    }
+
 }
 
 function ChangeSucursal() {
+    if ($("#id_cmb_suc").val() != "") {
+        $("#id_cmb_alm").html("");
 
-    $("#id_cmb_alm").html("");
+        $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
+            sucursal: $("#id_cmb_suc").val(),
 
-    $.post("controlador/Clogistica.php?op=LISTAR_ALM_GRALxSUC", {
-        sucursal: $("#id_cmb_suc").val(),
+        }, function (data) {
 
-    }, function (data) {
+            $("#id_cmb_alm").html(data);
 
-        $("#id_cmb_alm").html(data);
 
-    });
+            setTimeout(function () {
+                $("#id_cmb_alm").select2('open');
 
-    setTimeout(function () {
-        $("#id_cmb_alm").select2('open');
+            }, 200);
 
-    }, 200);
+
+        });
+    }
 
 }
 function ChangeAlmacen() {
-
-    $("#tipo_documento").select2('open');
+    if ($("#id_cmb_alm").val() != "" && !$("#id_cmb_alm").prop("disabled")) {
+        $("#tipo_documento").select2('open');
+    }
 }
 
 
 function ChangeTipoDoc() {
-    setTimeout(function () {
-        $("#serie").focus();
-    }, 200);
+    if ($("#tipo_documento").val() != "") {
+        setTimeout(function () {
+            $("#serie").focus();
+        }, 200);
+    }
 }
 $("#serie").keypress(function (e) {
     if (e.which == 13) {
@@ -968,30 +991,32 @@ $("#nro_documento").keypress(function (e) {
     }
 });
 
-/*function ChangeFecha(e) {
+$("#fecha").keypress(function (e) {
 
-
-    setTimeout(function () {
-        $("#tipo_compra").select2('open');
-    }, 200);
-
-}*/
-
-function ChangeTipoCompra() {
-    if ($("#tipo_compra").val() == 'Contado') {
-        $("#td-nro_dias").hide();
-        $("#igv_detalle").focus();
+    if (e.which == 13) {
         setTimeout(function () {
-            $("#id_cmb_pro").select2('open');
-        }, 200);
-    } else {
-        $("#td-nro_dias").show();
-        setTimeout(function () {
-            $("#nro_dias").focus();
+            $("#tipo_compra").select2('open');
         }, 200);
     }
 
+});
 
+function ChangeTipoCompra() {
+    if ($("#tipo_compra").val() != "") {
+        if ($("#tipo_compra").val() == 'Contado') {
+            $("#td-nro_dias").hide();
+            $("#igv_detalle").focus();
+            setTimeout(function () {
+                $("#id_cmb_pro").select2('open');
+            }, 200);
+        } else {
+            $("#td-nro_dias").show();
+            setTimeout(function () {
+                $("#nro_dias").focus();
+            }, 200);
+        }
+
+    }
 
 }
 
@@ -1011,7 +1036,7 @@ function ClickIGV() {
 }
 
 function ChangeProducto() {
-    if($("#id_cmb_pro").val()!=''){
+    if ($("#id_cmb_pro").val() != '') {
         $.post("controlador/Clogistica.php?op=PRECIO_COMPRA_ULTIMO", {
 
             id: $("#id_cmb_pro").val()
@@ -1021,12 +1046,12 @@ function ChangeProducto() {
             } else {
                 $("#precio_anterior").val(data);
             }
-    
+
             //console.log(data);
         }, "JSON").fail(function () {
             $("#precio_anterior").val("0.00");
         });
-    
+
         setTimeout(function () {
             $("#precio").focus()
         }, 200);
@@ -1047,24 +1072,29 @@ $("#cantidad").keypress(function (e) {
         $("#fecha_vencimiento").focus();
     }
 })
-/*function ChangeFechaVenc(e) {
 
-    $("#nro_lote").focus();
 
-}*/
+$("#fecha_vencimiento").keypress(function (e) {
 
+    if (e.which == 13) {
+       
+            $("#nro_lote").focus();
+       
+    }
+
+});
 $("#nro_lote").keypress(function (e) {
     if (e.which == 13) {
         setTimeout(function () {
             $("#bonificacion").select2('open');
-            
+
         }, 200);
     }
 })
 
 function ChangeBonificacion() {
-    
-    if($("#bonificacion").val()!=''){
+
+    if ($("#bonificacion").val() != '') {
         AñadirDetalle();
     }
 

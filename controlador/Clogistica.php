@@ -77,7 +77,7 @@ switch ($_GET["op"]) {
         $sucursal = $_POST['sucursal'];
 
         $listar = $olog->ListarAlmacenxSucursal($sucursal);
-        $opt = "<option value=''>Seleccione</option>";
+        $opt = "<option value=' '>Seleccione</option>";
         foreach ($listar as $a) {
 
             if ($a["tipo"] == '0') {
@@ -593,8 +593,6 @@ switch ($_GET["op"]) {
         break;
     case 'LLENAR_ORD_COM_DET':
         $id = $_POST['id'];
-
-        //$orden_compra = $olog->ListarOrdenCompraxId($id)->fetch();
 
         $listar = $olog->ListarOrdenComprDetalles($id);
 
